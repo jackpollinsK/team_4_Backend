@@ -6,13 +6,17 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import io.jsonwebtoken.Jwts;
+import org.example.controllers.ApplicationController;
 import org.example.controllers.AuthController;
 import org.example.controllers.JobRoleController;
+import org.example.daos.ApplicationDao;
 import org.example.daos.AuthDao;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
+import org.example.services.ApplicationService;
 import org.example.services.AuthService;
 import org.example.services.JobRoleService;
+import org.example.validators.ApplicationValidator;
 
 import java.security.Key;
 
@@ -20,10 +24,12 @@ public class JDDApplication extends Application<JDDConfiguration> {
     public static void main(final String[] args) throws Exception {
         new JDDApplication().run(args);
     }
+
     @Override
     public String getName() {
         return "JDD";
     }
+
     @Override
     public void initialize(final Bootstrap<JDDConfiguration> bootstrap) {
         bootstrap.addBundle(new SwaggerBundle<>() {
@@ -34,6 +40,7 @@ public class JDDApplication extends Application<JDDConfiguration> {
             }
         });
     }
+
     @Override
     public void run(final JDDConfiguration configuration,
                     final Environment environment) {
@@ -45,6 +52,11 @@ public class JDDApplication extends Application<JDDConfiguration> {
         environment.jersey()
                 .register(new JobRoleController(new JobRoleService(
                         new JobRoleDao(), databaseConnector)));
+
+        environment.jersey()
+                .register(new ApplicationController(new ApplicationService(
+                        new ApplicationDao(), new ApplicationValidator(),
+                        databaseConnector)));
     }
 
 }

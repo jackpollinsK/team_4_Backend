@@ -12,9 +12,8 @@ import java.sql.Statement;
 public class ApplicationDao {
 
     public int createApplication(
-            final ApplicationRequest applicationRequest)
-            throws DatabaseConnectionException, SQLException {
-        Connection c = DatabaseConnector.getConnection();
+            final ApplicationRequest applicationRequest, final Connection c)
+            throws SQLException {
 
         String insertStatement =
                 "INSERT INTO roleApplication VALUES "

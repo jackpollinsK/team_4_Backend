@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.daos.ApplicationDao;
+import org.example.daos.DatabaseConnector;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.FailedToCreateException;
@@ -14,11 +15,14 @@ public class ApplicationService {
 
     ApplicationDao applicationDao;
     ApplicationValidator applicationValidator;
+    DatabaseConnector databaseConnector;
 
     public ApplicationService(final ApplicationDao applicationDao,
-                              final ApplicationValidator applicationValidator) {
+                              final ApplicationValidator applicationValidator,
+                              final DatabaseConnector databaseConnector) {
         this.applicationDao = applicationDao;
         this.applicationValidator = applicationValidator;
+        this.databaseConnector = databaseConnector;
     }
 
     public int createDeliveryEmployee(
@@ -27,7 +31,8 @@ public class ApplicationService {
             DatabaseConnectionException {
         applicationValidator.validateApplication(applicationRequest);
 
-        int id = applicationDao.createApplication(applicationRequest);
+        int id = applicationDao.createApplication(applicationRequest,
+                databaseConnector.getConnection());
 
         if (id == -1) {
             throw new FailedToCreateException(Entity.APPLICATION);
