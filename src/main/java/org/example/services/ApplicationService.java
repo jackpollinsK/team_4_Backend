@@ -3,8 +3,6 @@ package org.example.services;
 import org.example.daos.ApplicationDao;
 import org.example.daos.DatabaseConnector;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.exceptions.Entity;
-import org.example.exceptions.FailedToCreateException;
 import org.example.exceptions.InvalidException;
 import org.example.models.ApplicationRequest;
 import org.example.validators.ApplicationValidator;

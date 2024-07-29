@@ -3,10 +3,8 @@ package org.example.controllers;
 
 import io.swagger.annotations.Api;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.exceptions.FailedToCreateException;
 import org.example.exceptions.InvalidException;
 import org.example.models.ApplicationRequest;
-import org.example.models.LoginRequest;
 import org.example.services.ApplicationService;
 
 import javax.ws.rs.POST;
