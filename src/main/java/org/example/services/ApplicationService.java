@@ -25,19 +25,14 @@ public class ApplicationService {
         this.databaseConnector = databaseConnector;
     }
 
-    public int createDeliveryEmployee(
+    public void createApplication(
             final ApplicationRequest applicationRequest)
-            throws FailedToCreateException, SQLException, InvalidException,
+            throws SQLException, InvalidException,
             DatabaseConnectionException {
         applicationValidator.validateApplication(applicationRequest);
 
-        int id = applicationDao.createApplication(applicationRequest,
+        applicationDao.createApplication(applicationRequest,
                 databaseConnector.getConnection());
 
-        if (id == -1) {
-            throw new FailedToCreateException(Entity.APPLICATION);
-        }
-
-        return id;
     }
 }

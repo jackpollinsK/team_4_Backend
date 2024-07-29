@@ -28,12 +28,12 @@ public class ApplicationController {
     @Path("/apply-for-role")
     public Response login(final ApplicationRequest applicationRequest) {
         try {
+            applicationService.createApplication(
+                    applicationRequest);
             return Response
                     .status(Response.Status.CREATED)
-                    .entity(applicationService.createDeliveryEmployee(
-                            applicationRequest))
                     .build();
-        } catch (SQLException | FailedToCreateException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
             return Response.serverError().build();
         } catch (InvalidException e) {
