@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AuthDao {
+public class  AuthDao {
 
     private static final String EMAIL1   = System.getenv("LOGIN_EMAIL_1");
     private static final String PASSWORD1  = System.getenv("LOGIN_PASSWORD_1");
