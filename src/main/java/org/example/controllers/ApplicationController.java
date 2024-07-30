@@ -24,7 +24,7 @@ public class ApplicationController {
 
     @POST
     @Path("/apply-for-role")
-    public Response login(final ApplicationRequest applicationRequest) {
+    public Response apply(final ApplicationRequest applicationRequest) {
         try {
             applicationService.createApplication(
                     applicationRequest);
