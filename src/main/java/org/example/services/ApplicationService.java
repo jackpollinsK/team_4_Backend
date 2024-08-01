@@ -3,6 +3,7 @@ package org.example.services;
 import org.example.daos.ApplicationDao;
 import org.example.daos.DatabaseConnector;
 import org.example.exceptions.DatabaseConnectionException;
+import org.example.exceptions.Entity;
 import org.example.exceptions.InvalidException;
 import org.example.models.ApplicationRequest;
 import org.example.validators.ApplicationValidator;
@@ -27,10 +28,17 @@ public class ApplicationService {
             final ApplicationRequest applicationRequest)
             throws SQLException, InvalidException,
             DatabaseConnectionException {
-        applicationValidator.validateApplication(applicationRequest);
-
-        applicationDao.createApplication(applicationRequest,
+        boolean applied = applicationDao.alreadyApplied(applicationRequest,
                 databaseConnector.getConnection());
+
+        if (applied) {
+            throw new InvalidException(Entity.APPLICATION,
+                    "You have already applied");
+        } else {
+            applicationDao.createApplication(applicationRequest,
+                    databaseConnector.getConnection());
+        }
+
 
     }
 }
