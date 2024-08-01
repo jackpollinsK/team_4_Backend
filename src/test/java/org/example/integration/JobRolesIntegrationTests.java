@@ -14,8 +14,8 @@ import org.mockito.Mockito;
 
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.client.Entity;
 
 
 @ExtendWith(DropwizardExtensionsSupport.class)
@@ -43,6 +43,47 @@ public class JobRolesIntegrationTests {
 
         Assertions.assertEquals(401, response);
 
+    }
+    @Test
+    void getJobRoleById_shouldReturnJobRoleInfo_whenJobRoleInfoDoesExist_withAuthorisedUser(){
+        Client client = APP.client();
+
+        Response token = client
+                .target("http://localhost:8080/api/auth/login")
+                .request().post(Entity.json(loginRequest));
+
+        int response = client
+                .target("http://localhost:8080/api/JobRoles/1")
+                .request().header("Authorization", "Bearer "
+                        + token.readEntity(String.class)).get().getStatus();
+
+        Assertions.assertEquals(200, response);
+    }
+    @Test
+    void getJobRoleById_shouldReturn404_whenJobRoleInfoDoesNotExist_withAuthorisedUser(){
+        Client client = APP.client();
+
+        Response token = client
+                .target("http://localhost:8080/api/auth/login")
+                .request().post(Entity.json(loginRequest));
+
+        int response = client
+                .target("http://localhost:8080/api/JobRoles/99999")
+                .request().header("Authorization", "Bearer "
+                        + token.readEntity(String.class)).get().getStatus();
+
+        Assertions.assertEquals(404, response);
+    }
+
+    @Test
+    void getJobRoleById_shouldReturn401_whenJobRoleInfoDoesExist_withUnauthorisedUser(){
+        Client client = APP.client();
+
+        int response = client
+                .target("http://localhost:8080/api/JobRoles/1")
+                .request().get().getStatus();
+
+        Assertions.assertEquals(401, response);
     }
 
     @Test
