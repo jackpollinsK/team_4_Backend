@@ -55,9 +55,9 @@ public class JobRoleDao {
         PreparedStatement preparedStmt = c.prepareStatement(insertRoleQuery,
                 Statement.RETURN_GENERATED_KEYS);
         preparedStmt.setString(1, jobRoleRequest.getRoleName());
-        preparedStmt.setString(2, jobRoleRequest.getLocation());
-        preparedStmt.setString(3, jobRoleRequest.getCapability());
-        preparedStmt.setString(4, jobRoleRequest.getBand());
+        preparedStmt.setInt(2, jobRoleRequest.getLocation());
+        preparedStmt.setInt(3, jobRoleRequest.getCapability());
+        preparedStmt.setInt(4, jobRoleRequest.getBand());
         preparedStmt.setString(5, jobRoleRequest.getClosingDate().toString());
 
         int affectedRows = preparedStmt.executeUpdate();
@@ -66,15 +66,13 @@ public class JobRoleDao {
             throw new SQLException("Creating user failed, no rows affected.");
         }
 
-        int roleID = 0;
-
         try (ResultSet rs = preparedStmt.getGeneratedKeys()) {
             if (rs.next()) {
-                roleID = rs.getInt(1);
+                return rs.getInt(1);
             }
         }
 
-        return roleID;
+        return -1;
     }
 
 }
