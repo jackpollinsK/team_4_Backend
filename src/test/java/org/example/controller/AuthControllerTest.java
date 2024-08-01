@@ -1,6 +1,5 @@
 package org.example.controller;
 import org.example.controllers.AuthController;
-import org.example.daos.DatabaseConnector;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.InvalidException;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.ws.rs.core.Response;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

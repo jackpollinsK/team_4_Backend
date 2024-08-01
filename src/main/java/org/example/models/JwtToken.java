@@ -1,6 +1,5 @@
 package org.example.models;
 
-
 import javax.security.auth.Subject;
 import java.security.Principal;
 
@@ -24,6 +23,7 @@ public class JwtToken implements Principal {
     public UserRole getUserRole() {
         return userRole;
     }
+
     public void setUserRole(final UserRole userRole) {
         this.userRole = userRole;
     }

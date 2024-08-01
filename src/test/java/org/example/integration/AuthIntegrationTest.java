@@ -25,10 +25,6 @@ public class AuthIntegrationTest {
                 EMAIL,
                 PASSWORD
         );
-        LoginRequest loginRequest2 = new LoginRequest(
-                "notreal@random.com",
-                "password321"
-        );
         Client client = APP.client();
         int status = client
                 .target("http://localhost:8080/api/auth/login")

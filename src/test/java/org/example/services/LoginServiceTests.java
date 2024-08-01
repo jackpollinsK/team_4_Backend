@@ -1,6 +1,5 @@
 package org.example.services;
 
-
 import io.jsonwebtoken.Jwts;
 import org.example.daos.AuthDao;
 import org.example.daos.DatabaseConnector;
@@ -11,12 +10,9 @@ import org.example.models.LoginRequest;
 import org.example.models.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.ws.rs.core.Response;
-import javax.xml.crypto.Data;
 import java.security.Key;
 import java.sql.Connection;
 import java.sql.SQLException;
