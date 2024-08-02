@@ -29,10 +29,11 @@ public class JobRoleService {
         int id = jobRoleDao.insertRole(jobRoleRequest,
                 databaseConnector.getConnection());
 
-        if (id != -1)
+        if (id != -1) {
             return id;
-        else
+        } else {
             throw new InvalidException(Entity.JOBROLES, "Invalid Data");
+        }
     }
 
     public List<JobRole> getJobRoles() throws SQLException,
@@ -47,6 +48,6 @@ public class JobRoleService {
         if (jobRoleInfo == null) {
             throw new DoesNotExistException(Entity.JOBROLES);
         }
-            return jobRoleInfo;
+        return jobRoleInfo;
     }
 }
