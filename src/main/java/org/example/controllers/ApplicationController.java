@@ -26,7 +26,7 @@ public class ApplicationController {
 
     @POST
     @Path("/apply-for-role")
-    @RolesAllowed(UserRole.ADMIN)
+    @RolesAllowed({UserRole.ADMIN, UserRole.USER})
     public Response apply(final ApplicationRequest applicationRequest) {
         try {
             applicationService.createApplication(
