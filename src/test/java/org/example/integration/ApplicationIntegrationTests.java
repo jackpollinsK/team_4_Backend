@@ -19,6 +19,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
+/*The TestMethodOrder ensures they are run they are supposed to
+*   1. 201 code - successful
+*   2. 400 code - User has already applied
+*/
+
 @ExtendWith(DropwizardExtensionsSupport.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ApplicationIntegrationTests {
