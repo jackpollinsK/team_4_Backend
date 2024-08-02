@@ -9,6 +9,7 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import io.jsonwebtoken.Jwts;
+
 import org.example.auth.JwtAuthenticator;
 import org.example.auth.RoleAuthoriser;
 import org.example.controllers.ApplicationController;
@@ -23,7 +24,6 @@ import org.example.services.ApplicationService;
 import org.example.services.AuthService;
 import org.example.services.JobRoleService;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import org.example.validators.ApplicationValidator;
 
 import java.security.Key;
 
@@ -71,8 +71,7 @@ public class JDDApplication extends Application<JDDConfiguration> {
 
         environment.jersey()
                 .register(new ApplicationController(new ApplicationService(
-                        new ApplicationDao(), new ApplicationValidator(),
-                        databaseConnector)));
+                        new ApplicationDao(), databaseConnector)));
     }
 
 }

@@ -5,8 +5,10 @@ import io.swagger.annotations.Api;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.InvalidException;
 import org.example.models.ApplicationRequest;
+import org.example.models.UserRole;
 import org.example.services.ApplicationService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -24,6 +26,7 @@ public class ApplicationController {
 
     @POST
     @Path("/apply-for-role")
+    @RolesAllowed(UserRole.ADMIN)
     public Response apply(final ApplicationRequest applicationRequest) {
         try {
             applicationService.createApplication(

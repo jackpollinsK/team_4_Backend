@@ -6,21 +6,17 @@ import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.InvalidException;
 import org.example.models.ApplicationRequest;
-import org.example.validators.ApplicationValidator;
 
 import java.sql.SQLException;
 
 public class ApplicationService {
 
     ApplicationDao applicationDao;
-    ApplicationValidator applicationValidator;
     DatabaseConnector databaseConnector;
 
     public ApplicationService(final ApplicationDao applicationDao,
-                              final ApplicationValidator applicationValidator,
                               final DatabaseConnector databaseConnector) {
         this.applicationDao = applicationDao;
-        this.applicationValidator = applicationValidator;
         this.databaseConnector = databaseConnector;
     }
 
