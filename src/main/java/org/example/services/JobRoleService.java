@@ -6,7 +6,6 @@ import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.InvalidException;
 import org.example.exceptions.DoesNotExistException;
-import org.example.exceptions.Entity;
 import org.example.models.JobRole;
 import org.example.models.JobRoleRequest;
 import org.example.models.JobRoleInfo;
@@ -30,7 +29,7 @@ public class JobRoleService {
         int id = jobRoleDao.insertRole(jobRoleRequest,
                 databaseConnector.getConnection());
 
-        if(id != -1)
+        if (id != -1)
             return id;
         else
             throw new InvalidException(Entity.JOBROLES, "Invalid Data");
