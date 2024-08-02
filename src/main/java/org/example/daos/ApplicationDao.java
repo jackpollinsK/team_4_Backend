@@ -47,4 +47,15 @@ public class ApplicationDao {
 
 
     }
+
+    public void deleteApplication(final ApplicationRequest applicationRequest,
+                                   final Connection c) throws
+            SQLException {
+        String deleteStatement =
+                "DELETE FROM roleApplication WHERE Email = ? AND role_id = ?";
+        PreparedStatement st = c.prepareStatement(deleteStatement);
+        st.setString(1, applicationRequest.getEmail());
+        st.setInt(2, applicationRequest.getRoleID());
+        st.executeUpdate();
+    }
 }

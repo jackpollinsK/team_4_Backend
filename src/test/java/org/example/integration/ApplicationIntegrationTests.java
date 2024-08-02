@@ -4,8 +4,13 @@ import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import org.example.JDDApplication;
 import org.example.JDDConfiguration;
+import org.example.daos.ApplicationDao;
+import org.example.daos.DatabaseConnector;
+import org.example.exceptions.DatabaseConnectionException;
 import org.example.models.ApplicationRequest;
 import org.example.models.LoginRequest;
+import org.junit.After;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -18,11 +23,12 @@ import javax.validation.constraints.Email;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 
 /*The TestMethodOrder ensures they are run they are supposed to
-*   1. 201 code - successful
-*   2. 400 code - User has already applied
-*/
+ *   1. 201 code - successful
+ *   2. 400 code - User has already applied
+ */
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -38,7 +44,7 @@ public class ApplicationIntegrationTests {
             PASSWORD
     );
 
-    ApplicationRequest applicationRequest = new ApplicationRequest(
+    static ApplicationRequest applicationRequest = new ApplicationRequest(
             EMAIL,
             2,
             "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
@@ -46,7 +52,7 @@ public class ApplicationIntegrationTests {
 
     @Test
     @Order(1)
-    void apply_ShouldReturn200() {
+    void apply_ShouldReturn201() {
         Client client = APP.client();
 
         Response token = client
@@ -83,5 +89,14 @@ public class ApplicationIntegrationTests {
 
         Assertions.assertEquals(400, status);
 
+    }
+
+    @AfterAll
+    public static void delete()
+            throws DatabaseConnectionException, SQLException {
+        ApplicationDao applicationDao = new ApplicationDao();
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        applicationDao.deleteApplication(applicationRequest,
+                databaseConnector.getConnection());
     }
 }
