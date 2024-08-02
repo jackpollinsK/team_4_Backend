@@ -26,14 +26,20 @@ public class ApplicationController {
 
     @POST
     @Path("/apply-for-role")
-    @RolesAllowed({UserRole.ADMIN, UserRole.USER})
+    @RolesAllowed(UserRole.USER)
     public Response apply(final ApplicationRequest applicationRequest) {
         try {
-            applicationService.createApplication(
+            boolean valid = applicationService.createApplication(
                     applicationRequest);
-            return Response
-                    .status(Response.Status.CREATED)
-                    .build();
+
+            if (valid) {
+                return Response
+                        .status(Response.Status.CREATED)
+                        .build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return Response.serverError().build();

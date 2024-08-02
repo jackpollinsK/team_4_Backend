@@ -20,7 +20,7 @@ public class ApplicationService {
         this.databaseConnector = databaseConnector;
     }
 
-    public void createApplication(
+    public boolean createApplication(
             final ApplicationRequest applicationRequest)
             throws SQLException, InvalidException,
             DatabaseConnectionException {
@@ -34,6 +34,8 @@ public class ApplicationService {
             applicationDao.createApplication(applicationRequest,
                     databaseConnector.getConnection());
         }
+
+        return true;
 
 
     }

@@ -36,8 +36,8 @@ public class ApplicationIntegrationTests {
     private static final DropwizardAppExtension<JDDConfiguration> APP =
             new DropwizardAppExtension<>(JDDApplication.class);
 
-    private static final String EMAIL = System.getenv("LOGIN_EMAIL_2");
-    private static final String PASSWORD = System.getenv("LOGIN_PASSWORD_2");
+    private static final String EMAIL = System.getenv("LOGIN_EMAIL_1");
+    private static final String PASSWORD = System.getenv("LOGIN_PASSWORD_1");
 
     private static final LoginRequest loginRequest = new LoginRequest(
             EMAIL,
