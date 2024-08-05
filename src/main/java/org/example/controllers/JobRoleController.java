@@ -50,6 +50,7 @@ public class JobRoleController {
     }
 
     @POST
+    @RolesAllowed(UserRole.ADMIN)
     public Response addRole(final JobRoleRequest jobRoleRequest) {
         try {
             int id = jobRoleService.insertRole(jobRoleRequest);
