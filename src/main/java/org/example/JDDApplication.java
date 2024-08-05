@@ -19,6 +19,7 @@ import org.example.daos.JobRoleDao;
 import org.example.models.JwtToken;
 import org.example.services.AuthService;
 import org.example.services.JobRoleService;
+import org.example.validators.JobRoleValidator;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import java.security.Key;
@@ -63,7 +64,9 @@ public class JDDApplication extends Application<JDDConfiguration> {
                         jwtKey, new AuthDao(), databaseConnector)));
         environment.jersey()
                 .register(new JobRoleController(new JobRoleService(
-                        new JobRoleDao(), databaseConnector)));
+                        new JobRoleDao(),
+                        databaseConnector,
+                        new JobRoleValidator())));
     }
 
 }
