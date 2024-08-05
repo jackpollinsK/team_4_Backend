@@ -1,6 +1,5 @@
 package org.example.services;
 
-import io.jsonwebtoken.lang.Assert;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
