@@ -35,8 +35,8 @@ public class ApplicationControllerTests {
     void apply_shouldReturn201_whenSuccessful()
             throws DatabaseConnectionException, SQLException, InvalidException {
 
-        Mockito.when(applicationService.createApplication(applicationRequest))
-                .thenReturn(true);
+        doNothing().when(applicationService)
+                .createApplication(applicationRequest);
         Response response = applicationController.apply(applicationRequest);
         assertEquals(201, response.getStatus());
     }

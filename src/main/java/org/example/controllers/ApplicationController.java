@@ -29,16 +29,10 @@ public class ApplicationController {
     @RolesAllowed(UserRole.USER)
     public Response apply(final ApplicationRequest applicationRequest) {
         try {
-            boolean valid = applicationService.createApplication(
-                    applicationRequest);
-
-            if (valid) {
-                return Response
-                        .status(Response.Status.CREATED)
-                        .build();
-            } else {
-                return Response.status(Response.Status.BAD_REQUEST).build();
-            }
+            applicationService.createApplication(applicationRequest);
+            return Response
+                    .status(Response.Status.CREATED)
+                    .build();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
