@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 
-@Api("Job Roles")
+@Api("Job Roles API")
 @Path("/api/JobRoles")
 public class JobRoleController {
 
