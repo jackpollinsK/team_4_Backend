@@ -15,13 +15,14 @@ public class CapabilityDao {
     public List<Capability> getAllCapabilities(final Connection c)
             throws SQLException, DatabaseConnectionException {
         List<Capability> capabilities = new ArrayList<>();
-        String query = "SELECT name FROM capability;";
+        String query = "SELECT id, name FROM capability;";
 
         try (PreparedStatement statement = c.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 Capability capability =
-                        new Capability(resultSet.getString("name"));
+                        new Capability(resultSet.getInt("id"),
+                                resultSet.getString("name"));
                 capabilities.add(capability);
             }
         }

@@ -16,12 +16,13 @@ public class BandDao {
     public List<Band> getAllBands(final Connection c)
             throws SQLException, DatabaseConnectionException {
         List<Band> bands = new ArrayList<>();
-        String query = "SELECT name FROM band;";
+        String query = "SELECT id, name FROM band;";
 
         try (PreparedStatement statement = c.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
-                Band band = new Band(resultSet.getString("name"));
+                Band band = new Band(resultSet.getInt("id"),
+                        resultSet.getString("name"));
                 bands.add(band);
             }
         }

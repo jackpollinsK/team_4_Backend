@@ -5,7 +5,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.models.JobRole;
 import org.example.models.Location;
 import org.example.models.UserRole;
 import org.example.services.LocationService;

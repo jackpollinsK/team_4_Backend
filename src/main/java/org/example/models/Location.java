@@ -1,12 +1,14 @@
 package org.example.models;
 
 public class Location {
+    int id;
     String name;
     String address;
     String phone;
 
-    public Location(final String name, final String address,
+    public Location(final int id, final String name, final String address,
                     final String phone) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;
@@ -34,5 +36,13 @@ public class Location {
 
     public void setPhone(final String phone) {
         this.phone = phone;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
     }
 }
