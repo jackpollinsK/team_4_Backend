@@ -65,26 +65,6 @@ public class JobRoleController {
 
     }
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({UserRole.USER, UserRole.ADMIN})
-    @ApiOperation(
-            value = "Returns Job Roles By Id",
-            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
-            response = JobRole.class)
-    public Response getJobRoleById(final @PathParam("id") int id) {
-        try {
-            JobRoleInfo jobRoleInfo = jobRoleService.getJobRoleById(id);
-            return Response.ok().entity(jobRoleInfo).build();
-        } catch (SQLException | DatabaseConnectionException e) {
-            return Response.serverError().build();
-        } catch (DoesNotExistException e) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage()).build();
-        }
-    }
-
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -99,6 +79,26 @@ public class JobRoleController {
             return Response.noContent().build();
         } catch (SQLException | DatabaseConnectionException e) {
             return Response.serverError().entity(e.getMessage()).build();
+        } catch (DoesNotExistException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({UserRole.USER, UserRole.ADMIN})
+    @ApiOperation(
+            value = "Returns Job Roles By Id",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = JobRole.class)
+    public Response getJobRoleById(final @PathParam("id") int id) {
+        try {
+            JobRoleInfo jobRoleInfo = jobRoleService.getJobRoleById(id);
+            return Response.ok().entity(jobRoleInfo).build();
+        } catch (SQLException | DatabaseConnectionException e) {
+            return Response.serverError().build();
         } catch (DoesNotExistException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage()).build();

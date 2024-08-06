@@ -31,7 +31,7 @@ public class JobRoleService {
         if (id != -1) {
             return id;
         } else {
-            throw new InvalidException(Entity.JOBROLES, "Invalid Data");
+            throw new InvalidException(Entity.JOB_ROLE, "Invalid Data");
         }
     }
 
@@ -45,7 +45,7 @@ public class JobRoleService {
         JobRoleInfo jobRoleInfo = jobRoleDao.getJobRoleById(id,
                 databaseConnector.getConnection());
         if (jobRoleInfo == null) {
-            throw new DoesNotExistException(Entity.JOBROLES);
+            throw new DoesNotExistException(Entity.JOB_ROLE);
         }
             return jobRoleInfo;
     }
@@ -57,7 +57,7 @@ public class JobRoleService {
                 databaseConnector.getConnection());
 
         if (jobRoleToUpdate == null) {
-            throw new DoesNotExistException(Entity.JOBROLES);
+            throw new DoesNotExistException(Entity.JOB_ROLE);
         }
         jobRoleDao.deleteJobRole(id, databaseConnector.getConnection());
 
