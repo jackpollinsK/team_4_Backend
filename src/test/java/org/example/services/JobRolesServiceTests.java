@@ -6,19 +6,25 @@ import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.engine.TestExecutionResult;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.ws.rs.core.Response;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
@@ -156,5 +162,20 @@ class JobRolesServiceTests {
                 .deleteJobRole(id, conn);
         assertThrows(DatabaseConnectionException.class,
                 () -> jobRoleDao.deleteJobRole(id,databaseConnector.getConnection()));
+    }
+    @Test
+    void deleteJobRole_shouldReturn204_whenRoleIsDeleted()
+            throws SQLException, DatabaseConnectionException {
+
+        try{
+            Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
+            int id = jobRoleDao.getMaxId(databaseConnector.getConnection());
+            if (id == -1) {
+                fail("Can not get max Id");
+            }
+            jobRoleDao.deleteJobRole(id, conn);
+        } catch (Exception e) {
+            fail("Should not throw an error");
+        }
     }
 }
