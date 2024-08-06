@@ -2,11 +2,12 @@ package org.example.controllers;
 
 
 import io.swagger.annotations.Api;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.example.daos.BandDao;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.models.JobRole;
+import org.example.models.Band;
+import org.example.models.Location;
 import org.example.models.UserRole;
 import org.example.services.BandService;
 
@@ -20,7 +21,7 @@ import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 
 @Api("Band API")
-@Path("/api/JobRoles")
+@Path("/api/band")
 public class BandController {
 
     BandService bandService;
@@ -31,11 +32,11 @@ public class BandController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({UserRole.ADMIN})
+    @RolesAllowed(UserRole.ADMIN)
     @ApiOperation(
             value = "Returns Bands",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
-            response = JobRole.class)
+            response = Band.class)
     public Response getBands() {
         try {
             return Response.ok().entity(bandService.getBands()).build();

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.models.JobRole;
+import org.example.models.Location;
 import org.example.models.UserRole;
 import org.example.services.LocationService;
 
@@ -30,11 +31,11 @@ public class LocationController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({UserRole.ADMIN})
+    @RolesAllowed(UserRole.ADMIN)
     @ApiOperation(
             value = "Returns Locations",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
-            response = JobRole.class)
+            response = Location.class)
     public Response getLocations() {
         try {
             return Response.ok().entity(locationService.getLocations()).build();

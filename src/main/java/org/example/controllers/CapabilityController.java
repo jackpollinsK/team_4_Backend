@@ -2,10 +2,11 @@ package org.example.controllers;
 
 
 import io.swagger.annotations.Api;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.models.JobRole;
+import org.example.models.Capability;
 import org.example.models.UserRole;
 import org.example.services.CapabilityService;
 
@@ -30,11 +31,11 @@ public class CapabilityController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({UserRole.ADMIN})
+    @RolesAllowed(UserRole.ADMIN)
     @ApiOperation(
             value = "Returns Capabilities",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
-            response = JobRole.class)
+            response = Capability.class)
     public Response getCapabilities() {
         try {
             return Response.ok().entity(capabilityService.getCapabilities())

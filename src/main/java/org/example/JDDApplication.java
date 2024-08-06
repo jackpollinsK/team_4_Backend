@@ -14,15 +14,24 @@ import org.example.auth.JwtAuthenticator;
 import org.example.auth.RoleAuthoriser;
 import org.example.controllers.ApplicationController;
 import org.example.controllers.AuthController;
+import org.example.controllers.BandController;
+import org.example.controllers.CapabilityController;
 import org.example.controllers.JobRoleController;
+import org.example.controllers.LocationController;
 import org.example.daos.ApplicationDao;
 import org.example.daos.AuthDao;
+import org.example.daos.BandDao;
+import org.example.daos.CapabilityDao;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
+import org.example.daos.LocationDao;
 import org.example.models.JwtToken;
 import org.example.services.ApplicationService;
 import org.example.services.AuthService;
+import org.example.services.BandService;
+import org.example.services.CapabilityService;
 import org.example.services.JobRoleService;
+import org.example.services.LocationService;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import java.security.Key;
@@ -31,10 +40,12 @@ public class JDDApplication extends Application<JDDConfiguration> {
     public static void main(final String[] args) throws Exception {
         new JDDApplication().run(args);
     }
+
     @Override
     public String getName() {
         return "JDD";
     }
+
     @Override
     public void initialize(final Bootstrap<JDDConfiguration> bootstrap) {
         bootstrap.addBundle(new SwaggerBundle<>() {
@@ -45,6 +56,7 @@ public class JDDApplication extends Application<JDDConfiguration> {
             }
         });
     }
+
     @Override
     public void run(final JDDConfiguration configuration,
                     final Environment environment) {
@@ -68,10 +80,18 @@ public class JDDApplication extends Application<JDDConfiguration> {
         environment.jersey()
                 .register(new JobRoleController(new JobRoleService(
                         new JobRoleDao(), databaseConnector)));
-
         environment.jersey()
                 .register(new ApplicationController(new ApplicationService(
                         new ApplicationDao(), databaseConnector)));
+        environment.jersey()
+                .register(new BandController(new BandService(
+                        new BandDao(), databaseConnector)));
+        environment.jersey()
+                .register(new LocationController(new LocationService(
+                        new LocationDao(), databaseConnector)));
+        environment.jersey()
+                .register(new CapabilityController(new CapabilityService(
+                        new CapabilityDao(), databaseConnector)));
     }
 
 }
