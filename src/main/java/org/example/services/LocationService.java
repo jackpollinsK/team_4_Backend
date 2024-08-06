@@ -3,7 +3,6 @@ package org.example.services;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.LocationDao;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.models.Band;
 import org.example.models.Location;
 
 import java.sql.SQLException;

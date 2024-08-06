@@ -5,6 +5,7 @@ import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
+import org.example.validators.JobRoleValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -23,7 +24,8 @@ class JobRolesServiceTests {
 
     JobRoleDao jobRoleDao = Mockito.mock(JobRoleDao.class);
     DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
-    JobRoleService jobRoleService = new JobRoleService(jobRoleDao, databaseConnector);
+    JobRoleValidator jobRoleValidator = Mockito.mock(JobRoleValidator.class);
+    JobRoleService jobRoleService = new JobRoleService(jobRoleDao, databaseConnector, jobRoleValidator);
 
     Connection conn;
     @Test
