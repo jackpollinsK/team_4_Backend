@@ -93,7 +93,7 @@ public class JobRoleDao {
         preparedStmt.setString(5, jobRoleRequest.getClosingDate().toString());
         preparedStmt.setString(6, jobRoleRequest.getDescription());
         preparedStmt.setString(7, jobRoleRequest.getResponsibilities());
-        preparedStmt.setString(8, jobRoleRequest.getLink());
+        preparedStmt.setString(8, jobRoleRequest.getJobSpec());
 
         int affectedRows = preparedStmt.executeUpdate();
 

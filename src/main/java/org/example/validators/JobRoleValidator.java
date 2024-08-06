@@ -19,7 +19,7 @@ public class JobRoleValidator {
             throw new InvalidException(Entity.JOBROLES,
                     "Role name must be not be null");
         }
-        if (jobRoleRequest.getDescription().length() < 2000) {
+        if (jobRoleRequest.getDescription().length() > 2000) {
             throw new InvalidException(Entity.JOBROLES,
                     "Description name must be less than 2000 Characters");
         }
@@ -27,7 +27,7 @@ public class JobRoleValidator {
             throw new InvalidException(Entity.JOBROLES,
                     "Description name must be not be null");
         }
-        if (jobRoleRequest.getResponsibilities().length() < 1000) {
+        if (jobRoleRequest.getResponsibilities().length() > 1000) {
             throw new InvalidException(Entity.JOBROLES,
                     "Responsibility name must be less than 1000 Characters");
         }
