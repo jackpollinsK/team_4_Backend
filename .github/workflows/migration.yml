@@ -31,4 +31,4 @@ jobs:
           FLYWAY_USER: ${{ secrets.DB_USERNAME }}
           FLYWAY_URL: jdbc:mysql://${{ secrets.DB_HOST }}/${{ secrets.DB_NAME }}
           FLYWAY_BASELINE_ON_MIGRATE: true
-        run: mvn flyway:clean && mvn flyway:migrate
+        run: mvn flyway:migrate

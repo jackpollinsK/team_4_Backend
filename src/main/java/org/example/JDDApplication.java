@@ -9,14 +9,18 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import io.jsonwebtoken.Jwts;
+
 import org.example.auth.JwtAuthenticator;
 import org.example.auth.RoleAuthoriser;
+import org.example.controllers.ApplicationController;
 import org.example.controllers.AuthController;
 import org.example.controllers.JobRoleController;
+import org.example.daos.ApplicationDao;
 import org.example.daos.AuthDao;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
 import org.example.models.JwtToken;
+import org.example.services.ApplicationService;
 import org.example.services.AuthService;
 import org.example.services.JobRoleService;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -64,6 +68,10 @@ public class JDDApplication extends Application<JDDConfiguration> {
         environment.jersey()
                 .register(new JobRoleController(new JobRoleService(
                         new JobRoleDao(), databaseConnector)));
+
+        environment.jersey()
+                .register(new ApplicationController(new ApplicationService(
+                        new ApplicationDao(), databaseConnector)));
     }
 
 }

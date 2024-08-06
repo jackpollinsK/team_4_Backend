@@ -34,7 +34,7 @@ jobs:
         FLYWAY_USER: ${{ secrets.DB_USERNAME }}
         FLYWAY_URL: jdbc:mysql://${{ secrets.DB_HOST }}/${{ secrets.DB_INTEGRATION_NAME }}
         FLYWAY_BASELINE_ON_MIGRATE: true
-      run: mvn flyway:clean && mvn flyway:migrate
+      run: mvn flyway:migrate
     - name: Build with Maven
       env:
         DB_NAME: ${{ secrets.DB_INTEGRATION_NAME }}
