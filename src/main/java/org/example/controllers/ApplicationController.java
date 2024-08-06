@@ -25,7 +25,7 @@ public class ApplicationController {
     }
 
     @POST
-    @Path("/apply-for-role")
+    @Path("/applyForJobRole")
     @RolesAllowed(UserRole.USER)
     public Response apply(final ApplicationRequest applicationRequest) {
         try {
