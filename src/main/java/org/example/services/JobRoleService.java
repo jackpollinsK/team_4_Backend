@@ -9,8 +9,6 @@ import org.example.exceptions.InvalidException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
 import org.example.models.JobRoleRequest;
-
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
