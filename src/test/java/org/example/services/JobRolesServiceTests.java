@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.OngoingStubbing;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,12 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class JobRolesServiceTests {
 
-    JobRoleDao jobRoleDao = Mockito.mock(JobRoleDao.class);
-    DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
+    JobRoleDao jobRoleDao = mock(JobRoleDao.class);
+    DatabaseConnector databaseConnector = mock(DatabaseConnector.class);
     JobRoleService jobRoleService =
             new JobRoleService(jobRoleDao, databaseConnector);
     static String dateS = "2024-09-28";
@@ -198,22 +200,24 @@ class JobRolesServiceTests {
     }
 
         @Test
-    void insertJobRole_shouldReturnCreatedRole_whenNewRoleCreated()
+    void insertJobRole_shouldReturnCreatedRoleID_whenNewRoleCreated()
             throws SQLException, DatabaseConnectionException {
-            Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-            JobRoleDao roleDao = new JobRoleDao();
-//            JobRoleRequest expected = new JobRoleRequest(
-//                    "UI Test Designer",
-//                    1,
-//                    2,
-//                    3,
-//                    date,
-//                    "Hi".repeat(1000),
-//                    "Hi".repeat(500),
-//                    "www.kainos.com"
-//            );
 
-            int id = roleDao.insertRole(jobRoleRequest,conn);
-            assertNotEquals(-1,id);
+            JobRoleRequest expected = new JobRoleRequest(
+                    "UI Test Designer",
+                    1,
+                    2,
+                    3,
+                    date,
+                    "Hi".repeat(1000),
+                    "Hi".repeat(500),
+                    "www.kainos.com"
+            );
+
+            Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
+            Mockito.when(jobRoleDao.insertRole(jobRoleRequest,conn))
+                    .thenReturn(1);
+            int id = jobRoleDao.insertRole(jobRoleRequest,conn);
+            assertNotEquals(-1, id);
     }
 }
