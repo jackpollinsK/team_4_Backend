@@ -172,9 +172,7 @@ class JobRolesServiceTests {
                 () -> jobRoleDao.deleteJobRole(id,databaseConnector.getConnection()));
     }
     @Test
-    void deleteJobRole_shouldReturn204_whenRoleIsDeleted()
-            throws SQLException, DatabaseConnectionException {
-
+    void deleteJobRole_shouldReturn204_whenRoleIsDeleted() {
         try{
             Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
             int id = jobRoleDao.insertRole(jobRoleRequest,conn);
