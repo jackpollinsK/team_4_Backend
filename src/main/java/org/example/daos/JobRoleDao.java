@@ -128,16 +128,4 @@ public class JobRoleDao {
 
         return -1;
     }
-
-    public int getMaxId(final Connection c) throws SQLException {
-        String query = "SELECT MAX(id) from jobRoles;";
-        try (PreparedStatement statement = c.prepareStatement(query)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt("MAX(id)");
-                }
-            }
-        }
-        return -1;
-    }
 }

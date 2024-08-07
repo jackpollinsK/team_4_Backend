@@ -3,11 +3,8 @@ package org.example.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.eclipse.jetty.http.HttpStatus;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.exceptions.InvalidException;
 import org.example.models.JobRole;
-import org.example.models.JobRoleRequest;
 import org.example.models.UserRole;
 import org.example.exceptions.DoesNotExistException;
 import org.example.models.JobRoleInfo;
@@ -16,7 +13,6 @@ import org.example.services.JobRoleService;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -48,21 +44,6 @@ public class JobRoleController {
         } catch (SQLException | DatabaseConnectionException e) {
             return Response.serverError().build();
         }
-    }
-
-    @POST
-    public Response addRole(final JobRoleRequest jobRoleRequest) {
-        try {
-            int id = jobRoleService.insertRole(jobRoleRequest);
-            return Response.status(HttpStatus.CREATED_201).entity(id).build();
-        } catch (DatabaseConnectionException | SQLException e) {
-            return Response.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-                    .entity(e.getMessage()).build();
-        } catch (InvalidException e) {
-            return Response.status(HttpStatus.BAD_REQUEST_400)
-                    .entity(e.getMessage()).build();
-        }
-
     }
 
     @GET

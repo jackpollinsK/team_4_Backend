@@ -6,25 +6,21 @@ import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
-import org.junit.jupiter.api.Assertions;
+import org.example.models.JobRoleRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.engine.TestExecutionResult;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.ws.rs.core.Response;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +30,19 @@ class JobRolesServiceTests {
     DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
     JobRoleService jobRoleService =
             new JobRoleService(jobRoleDao, databaseConnector);
+    static String dateS = "2024-09-28";
+    static java.sql.Date date = java.sql.Date.valueOf(dateS);
+    private static final JobRoleRequest jobRoleRequest = new JobRoleRequest(
+            "UX Test Designer",
+            1,
+            2,
+            3,
+            date,
+            "Fantastic Job",
+            "Loads of Responsibilities",
+            "www.kainos.com"
 
+    );
     Connection conn;
 
     @Test
@@ -141,7 +149,7 @@ class JobRolesServiceTests {
     void deleteJobRole_shouldThrowSQLException_whenDaoThrowsSqlException()
             throws SQLException, DatabaseConnectionException {
         Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-        int id = jobRoleDao.getMaxId(databaseConnector.getConnection());
+        int id = jobRoleDao.insertRole(jobRoleRequest,conn);
         if (id == -1) {
             fail("Can not get max Id");
         }
@@ -154,7 +162,7 @@ class JobRolesServiceTests {
     void deleteJobRole_shouldThrowDatabaseException_whenDaoThrowsSqlException()
             throws SQLException, DatabaseConnectionException {
         Mockito.when(databaseConnector.getConnection()).thenReturn(null);
-        int id = jobRoleDao.getMaxId(databaseConnector.getConnection());
+        int id = jobRoleDao.insertRole(jobRoleRequest,conn);
         if (id == -1) {
             fail("Can not get max Id");
         }
@@ -169,7 +177,7 @@ class JobRolesServiceTests {
 
         try{
             Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-            int id = jobRoleDao.getMaxId(databaseConnector.getConnection());
+            int id = jobRoleDao.insertRole(jobRoleRequest,conn);
             if (id == -1) {
                 fail("Can not get max Id");
             }
@@ -177,5 +185,37 @@ class JobRolesServiceTests {
         } catch (Exception e) {
             fail("Should not throw an error");
         }
+    }
+
+    @Test
+    void insertJobRole_shouldThrowSQLException_whenDaoThrowsSqlException()
+            throws SQLException, DatabaseConnectionException{
+        Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
+
+        Mockito.when(jobRoleDao.insertRole(jobRoleRequest,conn))
+                .thenThrow(SQLException.class);
+
+        assertThrows(SQLException.class, () ->
+                jobRoleDao.insertRole(jobRoleRequest,conn));
+    }
+
+        @Test
+    void insertJobRole_shouldReturnCreatedRole_whenNewRoleCreated()
+            throws SQLException, DatabaseConnectionException {
+            Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
+            JobRoleDao roleDao = new JobRoleDao();
+//            JobRoleRequest expected = new JobRoleRequest(
+//                    "UI Test Designer",
+//                    1,
+//                    2,
+//                    3,
+//                    date,
+//                    "Hi".repeat(1000),
+//                    "Hi".repeat(500),
+//                    "www.kainos.com"
+//            );
+
+            int id = roleDao.insertRole(jobRoleRequest,conn);
+            assertNotEquals(-1,id);
     }
 }

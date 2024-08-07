@@ -172,11 +172,8 @@ public class JobRolesIntegrationTests {
                 .target("http://localhost:8080/api/auth/login")
                 .request().post(Entity.json(loginRequest2));
 
-        Response response = client
-                .target("http://localhost:8080/api/JobRoles/")
-                .request().post(Entity.json(jobRoleRequest));
-
-        int id = jobRoleDao.getMaxId(databaseConnector.getConnection());
+        int id = jobRoleDao.insertRole(jobRoleRequest
+                ,databaseConnector.getConnection());
         if (id == -1) {
             fail("Can not get max Id");
         }

@@ -22,19 +22,6 @@ public class JobRoleService {
         this.databaseConnector = databaseConnector;
     }
 
-    public int insertRole(final JobRoleRequest jobRoleRequest)
-            throws DatabaseConnectionException, SQLException, InvalidException {
-
-        int id = jobRoleDao.insertRole(jobRoleRequest,
-                databaseConnector.getConnection());
-
-        if (id != -1) {
-            return id;
-        } else {
-            throw new InvalidException(Entity.JOBROLES, "Invalid Data");
-        }
-    }
-
     public List<JobRole> getJobRoles() throws SQLException,
             DatabaseConnectionException {
         return jobRoleDao.getAllJobRoles(databaseConnector.getConnection());
