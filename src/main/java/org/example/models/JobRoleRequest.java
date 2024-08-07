@@ -17,6 +17,7 @@ public class JobRoleRequest {
     private String responsibilities;
     private String jobSpec;
     private int openPositions;
+    private String link;
 
     @JsonCreator
     public JobRoleRequest(@JsonProperty("roleName") final String roleName,
@@ -29,7 +30,8 @@ public class JobRoleRequest {
                           final String responsibilities,
                           @JsonProperty("jobSpec") final String jobSpec,
                           @JsonProperty("openPositions")
-                          final int openPositions) {
+                          final int openPositions,
+                          @JsonProperty("link") final String link) {
         this.roleName = roleName;
         this.location = location;
         this.capability = capability;
@@ -39,6 +41,7 @@ public class JobRoleRequest {
         this.responsibilities = responsibilities;
         this.jobSpec = jobSpec;
         this.openPositions = openPositions;
+        this.link = link;
     }
 
     public String getRoleName() {
@@ -109,7 +112,15 @@ public class JobRoleRequest {
         return openPositions;
     }
 
+    public String getLink() {
+        return link;
+    }
+
     public void setOpenPositions(final int openPositions) {
         this.openPositions = openPositions;
+    }
+
+    public void setLink(final String link) {
+        this.link = link;
     }
 }

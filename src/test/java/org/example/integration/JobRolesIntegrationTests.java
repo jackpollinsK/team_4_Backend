@@ -4,17 +4,14 @@ import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import org.example.JDDApplication;
 import org.example.JDDConfiguration;
-import org.example.daos.ApplicationDao;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.InvalidException;
-import org.example.models.JobRoleRequest;
 import org.example.models.LoginRequest;
 
 import org.example.services.AuthService;
 import org.example.validators.JobRoleValidator;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,9 +73,8 @@ public class JobRolesIntegrationTests {
         Assertions.assertEquals(401, response);
 
     }
-
     @Test
-    void getJobRoleById_shouldReturnJobRoleInfo_whenJobRoleInfoDoesExist_withAuthorisedUser() {
+    void getJobRoleById_shouldReturnJobRoleInfo_whenJobRoleInfoDoesExist_withAuthorisedUser(){
         Client client = APP.client();
 
         Response token = client
@@ -92,9 +88,8 @@ public class JobRolesIntegrationTests {
 
         Assertions.assertEquals(200, response);
     }
-
     @Test
-    void getJobRoleById_shouldReturn404_whenJobRoleInfoDoesNotExist_withAuthorisedUser() {
+    void getJobRoleById_shouldReturn404_whenJobRoleInfoDoesNotExist_withAuthorisedUser(){
         Client client = APP.client();
 
         Response token = client
@@ -110,7 +105,7 @@ public class JobRolesIntegrationTests {
     }
 
     @Test
-    void getJobRoleById_shouldReturn401_whenJobRoleInfoDoesExist_withUnauthorisedUser() {
+    void getJobRoleById_shouldReturn401_whenJobRoleInfoDoesExist_withUnauthorisedUser(){
         Client client = APP.client();
 
         int response = client
@@ -133,7 +128,23 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).get()
                 .getStatus();
-        Assertions.assertEquals(200, response);
+        Assertions.assertEquals(200,response);
+    }
+
+    @Test
+    void deleteJobRole_shouldReturn403_WhenUserIsUnauthorised() {
+        Client client = APP.client();
+
+        Response token = client
+                .target("http://localhost:8080/api/auth/login")
+                .request().post(Entity.json(loginRequest));
+
+        int response = client
+                .target("http://localhost:8080/api/JobRoles/2")
+                .request().header("Authorization", "Bearer "
+                        + token.readEntity(String.class)).delete()
+                .getStatus();
+        Assertions.assertEquals(403,response);
     }
 
     @Test
@@ -149,8 +160,31 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).delete()
                 .getStatus();
-        Assertions.assertEquals(404, response);
+        Assertions.assertEquals(404,response);
+    }
 
+    @Test
+    void deleteJobRole_shouldReturn204_WhenUserIsAuthorisedAndDeleteNotFound()
+            throws DatabaseConnectionException, SQLException {
+        Client client = APP.client();
+        JobRoleDao jobRoleDao = new JobRoleDao();
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+
+        Response token = client
+                .target("http://localhost:8080/api/auth/login")
+                .request().post(Entity.json(loginRequest2));
+
+        int id = jobRoleDao.insertRole(jobRoleRequest
+                ,databaseConnector.getConnection());
+        if (id == -1) {
+            fail("Can not get max Id");
+        }
+        int response2 = client
+                .target("http://localhost:8080/api/JobRoles/" + id)
+                .request().header("Authorization", "Bearer "
+                        + token.readEntity(String.class)).delete()
+                .getStatus();
+        Assertions.assertEquals(204,response2);
     }
 
     @Test
@@ -215,6 +249,4 @@ public class JobRolesIntegrationTests {
         System.out.println(response.toString());
         Assertions.assertEquals(201, response.getStatus());
     }
-
-
 }

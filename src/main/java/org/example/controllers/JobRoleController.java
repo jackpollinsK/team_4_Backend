@@ -14,6 +14,7 @@ import org.example.models.JobRoleInfo;
 import org.example.services.JobRoleService;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 
-@Api("Job Roles")
+@Api("Job Roles API")
 @Path("/api/JobRoles")
 public class JobRoleController {
 
@@ -70,15 +71,35 @@ public class JobRoleController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({UserRole.USER, UserRole.ADMIN})
     @ApiOperation(
-         value = "Returns Job Roles By Id",
+            value = "Returns Job Role By Id",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
             response = JobRole.class)
     public Response getJobRoleById(final @PathParam("id") int id) {
         try {
             JobRoleInfo jobRoleInfo = jobRoleService.getJobRoleById(id);
-                return Response.ok().entity(jobRoleInfo).build();
+            return Response.ok().entity(jobRoleInfo).build();
         } catch (SQLException | DatabaseConnectionException e) {
             return Response.serverError().build();
+        } catch (DoesNotExistException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({UserRole.ADMIN})
+    @ApiOperation(
+            value = "Deletes Job Role By Id",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = JobRole.class)
+    public Response deleteJobRole(final @PathParam("id") int id) {
+        try {
+            jobRoleService.deleteJobRole(id);
+            return Response.noContent().build();
+        } catch (SQLException | DatabaseConnectionException e) {
+            return Response.serverError().entity(e.getMessage()).build();
         } catch (DoesNotExistException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage()).build();
