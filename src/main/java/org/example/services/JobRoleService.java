@@ -7,7 +7,6 @@ import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -31,8 +30,21 @@ public class JobRoleService {
         JobRoleInfo jobRoleInfo = jobRoleDao.getJobRoleById(id,
                 databaseConnector.getConnection());
         if (jobRoleInfo == null) {
-            throw new DoesNotExistException(Entity.JOBROLES);
+            throw new DoesNotExistException(Entity.JOB_ROLE);
         }
             return jobRoleInfo;
+    }
+
+    public void deleteJobRole(final int id)
+          throws  SQLException, DoesNotExistException,
+            DatabaseConnectionException {
+        JobRoleInfo jobRoleToUpdate = jobRoleDao.getJobRoleById(id,
+                databaseConnector.getConnection());
+
+        if (jobRoleToUpdate == null) {
+            throw new DoesNotExistException(Entity.JOB_ROLE);
+        }
+        jobRoleDao.deleteJobRole(id, databaseConnector.getConnection());
+
     }
 }
