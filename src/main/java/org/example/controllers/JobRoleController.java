@@ -3,11 +3,8 @@ package org.example.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.eclipse.jetty.http.HttpStatus;
 import org.example.exceptions.DatabaseConnectionException;
-import org.example.exceptions.InvalidException;
 import org.example.models.JobRole;
-import org.example.models.JobRoleRequest;
 import org.example.models.UserRole;
 import org.example.exceptions.DoesNotExistException;
 import org.example.models.JobRoleInfo;
@@ -16,7 +13,6 @@ import org.example.services.JobRoleService;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -55,7 +51,7 @@ public class JobRoleController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({UserRole.USER, UserRole.ADMIN})
     @ApiOperation(
-            value = "Returns Job Roles By Id",
+            value = "Returns Job Role By Id",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
             response = JobRole.class)
     public Response getJobRoleById(final @PathParam("id") int id) {

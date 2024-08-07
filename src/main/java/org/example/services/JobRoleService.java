@@ -5,10 +5,8 @@ import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
-import org.example.exceptions.InvalidException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
-import org.example.models.JobRoleRequest;
 import java.sql.SQLException;
 import java.util.List;
 
