@@ -1,6 +1,9 @@
 package org.example.daos;
 
 import org.example.exceptions.DatabaseConnectionException;
+import org.example.exceptions.Entity;
+import org.example.exceptions.InvalidException;
+import org.example.models.FilterRequest;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
 
@@ -84,5 +87,137 @@ public class JobRoleDao {
             }
         }
         return null;
+    }
+
+    public List<JobRole> filterJobRoles(final String location,
+                                        final String band,
+                                        final String capability,
+                                        final Connection c)
+            throws SQLException, InvalidException {
+
+        List<JobRole> jobRoles = new ArrayList<>();
+
+        String query =
+                "SELECT jr.id, role_name, l.name, c.name, b.name, "
+                        + "closing_date, status "
+                        + "FROM jobRoles jr "
+                        + "INNER JOIN location l "
+                        + "ON l.id = jr.location_id "
+                        + "INNER JOIN capability c "
+                        + "ON c.id = jr.capability_id "
+                        + "INNER JOIN band b "
+                        + "ON b.id = jr.band_id "
+                        + "WHERE l.name = ? and role_name in ( "
+                        + "SELECT role_name  "
+                        + "FROM jobRoles jr  "
+                        + "INNER JOIN capability c "
+                        + "ON c.id = jr.capability_id "
+                        + "WHERE c.name = ? and role_name in ( "
+                        + "SELECT role_name "
+                        + "FROM jobRoles jr "
+                        + "INNER JOIN band b "
+                        + "ON b.id = jr.band_id "
+                        + "where b.name = ?)); ";
+
+
+        try (PreparedStatement statement = c.prepareStatement(query)) {
+
+            statement.setString(1, location);
+            statement.setString(2, capability);
+            statement.setString(3, band);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            int count = 0;
+
+            while (resultSet.next()) {
+                JobRole jobRole = new JobRole(
+                        resultSet.getInt("id"),
+                        resultSet.getString("role_name"),
+                        resultSet.getString("l.name"),
+                        resultSet.getString("c.name"),
+                        resultSet.getString("b.name"),
+                        resultSet.getDate("closing_date"),
+                        "open"
+                );
+                jobRoles.add(jobRole);
+                count++;
+            }
+
+            if (count == 0) {
+                getUnionedJobRoles(location, band, capability, c);
+            }
+
+
+        }
+
+        return jobRoles;
+    }
+
+    private List<JobRole> getUnionedJobRoles(final String location,
+                                             final String band,
+                                             final String capability,
+                                             final Connection c)
+            throws SQLException, InvalidException {
+
+        List<JobRole> jobRoles = new ArrayList<>();
+
+        String query =
+                "SELECT jr.id, role_name, l.name, c.name, b.name, "
+                        + "closing_date, status "
+                        + "FROM jobRoles jr  "
+                        + "INNER JOIN location l "
+                        + "ON l.id = jr.location_id "
+                        + "INNER JOIN capability c "
+                        + "ON c.id = jr.capability_id "
+                        + "INNER JOIN band b "
+                        + "ON b.id = jr.band_id "
+                        + "where l.name = ? and status = 'open' "
+                        + "UNION "
+                        + "SELECT jr.id, role_name,l.name,c.name,b.name, "
+                        + "closing_date, status "
+                        + "FROM jobRoles jr  "
+                        + "INNER JOIN location l "
+                        + "ON l.id = jr.location_id "
+                        + "INNER JOIN capability c "
+                        + "ON c.id = jr.capability_id "
+                        + "INNER JOIN band b "
+                        + "ON b.id = jr.band_id "
+                        + "where c.name = ? and status = 'open' "
+                        + "UNION "
+                        + "SELECT jr.id, role_name, l.name, c.name, b.name, "
+                        + "closing_date, status "
+                        + "FROM jobRoles jr  "
+                        + "INNER JOIN location l "
+                        + "ON l.id = jr.location_id "
+                        + "INNER JOIN capability c "
+                        + "ON c.id = jr.capability_id "
+                        + "INNER JOIN band b "
+                        + "ON b.id = jr.band_id "
+                        + "where b.name = ? and status = 'open';";
+
+        try (PreparedStatement statement = c.prepareStatement(query)) {
+            statement.setString(1, location);
+            statement.setString(2, capability);
+            statement.setString(3, band);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                JobRole jobRole = new JobRole(
+                        resultSet.getInt("id"),
+                        resultSet.getString("role_name"),
+                        resultSet.getString("l.name"),
+                        resultSet.getString("c.name"),
+                        resultSet.getString("b.name"),
+                        resultSet.getDate("closing_date"),
+                        "open"
+                );
+                jobRoles.add(jobRole);
+            }
+        }
+
+
+        return jobRoles;
+
     }
 }

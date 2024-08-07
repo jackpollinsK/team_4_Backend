@@ -3,7 +3,10 @@ package org.example.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
+import org.eclipse.jetty.http.HttpStatus;
 import org.example.exceptions.DatabaseConnectionException;
+import org.example.exceptions.InvalidException;
+import org.example.models.FilterRequest;
 import org.example.models.JobRole;
 import org.example.models.UserRole;
 import org.example.exceptions.DoesNotExistException;
@@ -19,6 +22,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.logging.Filter;
 
 @Api("Job Roles")
 @Path("/api/JobRoles")
@@ -32,7 +36,7 @@ public class JobRoleController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ UserRole.USER, UserRole.ADMIN })
+    @RolesAllowed({UserRole.USER, UserRole.ADMIN})
     @ApiOperation(
             value = "Returns Job Roles",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
@@ -50,17 +54,42 @@ public class JobRoleController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({UserRole.USER, UserRole.ADMIN})
     @ApiOperation(
-         value = "Returns Job Roles By Id",
+            value = "Returns Job Roles By Id",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
             response = JobRole.class)
     public Response getJobRoleById(final @PathParam("id") int id) {
         try {
             JobRoleInfo jobRoleInfo = jobRoleService.getJobRoleById(id);
-                return Response.ok().entity(jobRoleInfo).build();
+            return Response.ok().entity(jobRoleInfo).build();
         } catch (SQLException | DatabaseConnectionException e) {
             return Response.serverError().build();
         } catch (DoesNotExistException e) {
             return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/filter/{location}/{band}/{capability}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({UserRole.USER, UserRole.ADMIN})
+    @ApiOperation(
+            value = "Returns Filtered Job Roles",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = JobRole.class)
+    public Response getFilteredJobRoles(
+            final @PathParam("location") String location,
+            final @PathParam("band") String band,
+            final @PathParam("capability") String capability) {
+        try {
+            return Response.ok()
+                    .entity(jobRoleService.getFilteredJobRoles(location, band,
+                            capability))
+                    .build();
+        } catch (SQLException | DatabaseConnectionException e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        } catch (InvalidException e) {
+            return Response.status(HttpStatus.BAD_REQUEST_400)
                     .entity(e.getMessage()).build();
         }
     }

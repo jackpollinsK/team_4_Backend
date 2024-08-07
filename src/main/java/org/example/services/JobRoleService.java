@@ -5,6 +5,8 @@ import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
+import org.example.exceptions.InvalidException;
+import org.example.models.FilterRequest;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
 
@@ -33,6 +35,15 @@ public class JobRoleService {
         if (jobRoleInfo == null) {
             throw new DoesNotExistException(Entity.JOBROLES);
         }
-            return jobRoleInfo;
+        return jobRoleInfo;
+    }
+
+    public List<JobRole> getFilteredJobRoles(
+            final String location,
+            final String band,
+            final String capability)
+            throws DatabaseConnectionException, SQLException, InvalidException {
+        return jobRoleDao.filterJobRoles(location, band, capability,
+                databaseConnector.getConnection());
     }
 }
