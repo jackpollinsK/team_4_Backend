@@ -109,5 +109,23 @@ public class JobRoleDao {
 
         return -1;
     }
+    public void deleteJobRole(final int id, final Connection c) throws
+            SQLException, DatabaseConnectionException {
+        String deleteStatement = "DELETE FROM jobRoles WHERE id = ?";
+        PreparedStatement st = c.prepareStatement(deleteStatement);
+        st.setInt(1, id);
+        st.executeUpdate();
+    }
+    public int getMaxId(final Connection c) throws SQLException {
+        String query = "SELECT MAX(id) from jobRoles;";
+        try (PreparedStatement statement = c.prepareStatement(query)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("MAX(id)");
+                }
+            }
+        }
+        return -1;
+    }
 
 }
