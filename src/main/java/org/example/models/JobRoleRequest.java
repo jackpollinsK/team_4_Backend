@@ -30,8 +30,7 @@ public class JobRoleRequest {
                           final String responsibilities,
                           @JsonProperty("jobSpec") final String jobSpec,
                           @JsonProperty("openPositions")
-                          final int openPositions,
-                          @JsonProperty("link") final String link) {
+                          final int openPositions) {
         this.roleName = roleName;
         this.location = location;
         this.capability = capability;

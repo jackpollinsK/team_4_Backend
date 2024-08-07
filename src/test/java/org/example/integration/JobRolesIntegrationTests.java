@@ -8,6 +8,7 @@ import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.InvalidException;
+import org.example.models.JobRoleRequest;
 import org.example.models.LoginRequest;
 
 import org.example.services.AuthService;
@@ -49,7 +50,6 @@ public class JobRolesIntegrationTests {
             "Hi".repeat(500),
             "www.kainos.com",
             1
-
     );
     private static final LoginRequest loginRequest = new LoginRequest(
             EMAIL,
