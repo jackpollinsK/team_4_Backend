@@ -202,21 +202,7 @@ class JobRolesServiceTests {
         @Test
     void insertJobRole_shouldReturnCreatedRoleID_whenNewRoleCreated()
             throws SQLException, DatabaseConnectionException {
-
-            JobRoleRequest expected = new JobRoleRequest(
-                    "UI Test Designer",
-                    1,
-                    2,
-                    3,
-                    date,
-                    "Hi".repeat(1000),
-                    "Hi".repeat(500),
-                    "www.kainos.com"
-            );
-
             Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-            Mockito.when(jobRoleDao.insertRole(jobRoleRequest,conn))
-                    .thenReturn(1);
             int id = jobRoleDao.insertRole(jobRoleRequest,conn);
             assertNotEquals(-1, id);
     }
