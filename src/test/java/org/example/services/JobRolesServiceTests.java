@@ -43,7 +43,8 @@ class JobRolesServiceTests {
             date,
             "Hi".repeat(1000),
             "Hi".repeat(500),
-            "www.kainos.com"
+            "www.kainos.com",
+            1
 
     );
     private static final LoginRequest loginRequest = new LoginRequest(

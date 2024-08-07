@@ -81,8 +81,8 @@ public class JobRoleDao {
         String insertRoleQuery =
                 "INSERT INTO jobRoles(role_name, location_id, capability_id,"
                         + " band_id, closing_date, status, description,"
-                        + " responsibilities, job_spec) VALUES "
-                        + "(?, ?, ?, ?, ?, 'open', ?, ?, ?);";
+                        + " responsibilities, job_spec, open_positions) VALUES "
+                        + "(?, ?, ?, ?, ?, 'open', ?, ?, ?, ?);";
 
         PreparedStatement preparedStmt = c.prepareStatement(insertRoleQuery,
                 Statement.RETURN_GENERATED_KEYS);
@@ -94,6 +94,7 @@ public class JobRoleDao {
         preparedStmt.setString(6, jobRoleRequest.getDescription());
         preparedStmt.setString(7, jobRoleRequest.getResponsibilities());
         preparedStmt.setString(8, jobRoleRequest.getJobSpec());
+        preparedStmt.setInt(9, jobRoleRequest.getOpenPositions());
 
         int affectedRows = preparedStmt.executeUpdate();
 
@@ -109,6 +110,7 @@ public class JobRoleDao {
 
         return -1;
     }
+
     public void deleteJobRole(final int id, final Connection c) throws
             SQLException, DatabaseConnectionException {
         String deleteStatement = "DELETE FROM jobRoles WHERE id = ?";
@@ -116,6 +118,7 @@ public class JobRoleDao {
         st.setInt(1, id);
         st.executeUpdate();
     }
+
     public int getMaxId(final Connection c) throws SQLException {
         String query = "SELECT MAX(id) from jobRoles;";
         try (PreparedStatement statement = c.prepareStatement(query)) {

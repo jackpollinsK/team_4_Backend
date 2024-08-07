@@ -16,6 +16,7 @@ public class JobRoleRequest {
     private String description;
     private String responsibilities;
     private String jobSpec;
+    private int openPositions;
 
     @JsonCreator
     public JobRoleRequest(@JsonProperty("roleName") final String roleName,
@@ -23,11 +24,12 @@ public class JobRoleRequest {
                           @JsonProperty("capability") final int capability,
                           @JsonProperty("band") final int band,
                           @JsonProperty("closingDate") final Date closingDate,
-                          @JsonProperty("description")
-                          final String description,
+                          @JsonProperty("description") final String description,
                           @JsonProperty("responsibilities")
                           final String responsibilities,
-                          @JsonProperty("jobSpec") final String jobSpec) {
+                          @JsonProperty("jobSpec") final String jobSpec,
+                          @JsonProperty("openPositions")
+                          final int openPositions) {
         this.roleName = roleName;
         this.location = location;
         this.capability = capability;
@@ -36,6 +38,7 @@ public class JobRoleRequest {
         this.description = description;
         this.responsibilities = responsibilities;
         this.jobSpec = jobSpec;
+        this.openPositions = openPositions;
     }
 
     public String getRoleName() {
@@ -100,5 +103,13 @@ public class JobRoleRequest {
 
     public void setJobSpec(final String jobSpec) {
         this.jobSpec = jobSpec;
+    }
+
+    public int getOpenPositions() {
+        return openPositions;
+    }
+
+    public void setOpenPositions(final int openPositions) {
+        this.openPositions = openPositions;
     }
 }
