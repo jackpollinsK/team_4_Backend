@@ -13,6 +13,7 @@ import org.example.models.UserRole;
 import org.example.services.ApplicationService;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
