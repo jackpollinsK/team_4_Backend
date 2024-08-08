@@ -1,5 +1,6 @@
 package org.example.integration;
 
+
 import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import org.example.JDDApplication;
@@ -14,7 +15,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
-public class BandIntegrationTest {
+public class LocationIntegrationTests {
 
     public static final DropwizardAppExtension<JDDConfiguration> APP =
             new DropwizardAppExtension<>(JDDApplication.class);
@@ -35,7 +36,7 @@ public class BandIntegrationTest {
     );
 
     @Test
-    void getBands_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
+    void getLocations_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
 
         Client client = APP.client();
 
@@ -49,7 +50,7 @@ public class BandIntegrationTest {
     }
 
     @Test
-    void getBands_shouldReturn403_WhenUserIsNotAdmin() {
+    void getLocations_shouldReturn403_WhenUserIsNotAdmin() {
         Client client = APP.client();
 
         Response token = client
@@ -57,7 +58,7 @@ public class BandIntegrationTest {
                 .request().post(Entity.json(loginRequest));
 
         int response = client
-                .target("http://localhost:8080/api/band")
+                .target("http://localhost:8080/api/location")
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).get()
                 .getStatus();
@@ -66,7 +67,7 @@ public class BandIntegrationTest {
 
 
     @Test
-    void getBands_shouldReturn200_WhenUserIsAuthorised() {
+    void getLocations_shouldReturn200_WhenUserIsAuthorised() {
         Client client = APP.client();
 
         Response token = client
@@ -74,10 +75,11 @@ public class BandIntegrationTest {
                 .request().post(Entity.json(loginRequest2));
 
         int response = client
-                .target("http://localhost:8080/api/band")
+                .target("http://localhost:8080/api/location")
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).get()
                 .getStatus();
         Assertions.assertEquals(200, response);
     }
+
 }

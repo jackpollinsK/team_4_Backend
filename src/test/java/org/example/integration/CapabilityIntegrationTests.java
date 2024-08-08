@@ -14,7 +14,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
-public class BandIntegrationTest {
+public class CapabilityIntegrationTests {
 
     public static final DropwizardAppExtension<JDDConfiguration> APP =
             new DropwizardAppExtension<>(JDDApplication.class);
@@ -35,12 +35,12 @@ public class BandIntegrationTest {
     );
 
     @Test
-    void getBands_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
+    void getCapabilities_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
 
         Client client = APP.client();
 
         int response = client
-                .target("http://localhost:8080/api/band")
+                .target("http://localhost:8080/api/capability")
                 .request()
                 .get().getStatus();
 
@@ -49,7 +49,7 @@ public class BandIntegrationTest {
     }
 
     @Test
-    void getBands_shouldReturn403_WhenUserIsNotAdmin() {
+    void getCapabilities_shouldReturn403_WhenUserIsNotAdmin() {
         Client client = APP.client();
 
         Response token = client
@@ -57,7 +57,7 @@ public class BandIntegrationTest {
                 .request().post(Entity.json(loginRequest));
 
         int response = client
-                .target("http://localhost:8080/api/band")
+                .target("http://localhost:8080/api/capability")
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).get()
                 .getStatus();
@@ -66,7 +66,7 @@ public class BandIntegrationTest {
 
 
     @Test
-    void getBands_shouldReturn200_WhenUserIsAuthorised() {
+    void getCapabilities_shouldReturn200_WhenUserIsAuthorised() {
         Client client = APP.client();
 
         Response token = client
@@ -74,7 +74,7 @@ public class BandIntegrationTest {
                 .request().post(Entity.json(loginRequest2));
 
         int response = client
-                .target("http://localhost:8080/api/band")
+                .target("http://localhost:8080/api/capability")
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).get()
                 .getStatus();
