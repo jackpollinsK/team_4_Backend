@@ -238,7 +238,8 @@ public class JobRolesIntegrationTests {
                         + token.readEntity(String.class))
                 .post(Entity.json(jobRoleRequest));
 
-        int id = jobRoleDao.getMaxId(databaseConnector.getConnection());
+        int id = jobRoleDao.insertRole(jobRoleRequest
+                ,databaseConnector.getConnection());
         if (id == -1) {
             fail("Can not get max Id");
         }
