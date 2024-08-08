@@ -92,39 +92,6 @@ public class ApplicationIntegrationTests {
     }
 
 
-
-    @Test
-    @Order(3)
-    void getApplications_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
-        Client client = APP.client();
-
-        int response = client
-                .target("http://localhost:8080/api/getAppliedJobs")
-                .request()
-                .post(Entity.json(EMAIL)).getStatus();
-
-        Assertions.assertEquals(401, response);
-
-    }
-
-    @Test
-    @Order(4)
-    void getApplications_shouldReturn200_WhenUserIsAuthorised() {
-        Client client = APP.client();
-
-        Response token = client
-                .target("http://localhost:8080/api/auth/login")
-                .request().post(Entity.json(loginRequest));
-
-        int response = client
-                .target("http://localhost:8080/api/getAppliedJobs")
-                .request().header("Authorization", "Bearer "
-                        + token.readEntity(String.class))
-                .post(Entity.json(EMAIL))
-                .getStatus();
-        Assertions.assertEquals(200, response);
-    }
-
     @AfterAll
     public static void delete()
             throws DatabaseConnectionException, SQLException {

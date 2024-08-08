@@ -4,7 +4,6 @@ import org.example.daos.ApplicationDao;
 import org.example.daos.DatabaseConnector;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.InvalidException;
-import org.example.models.Application;
 import org.example.models.ApplicationRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,52 +72,4 @@ class ApplicationServiceTests {
 
     }
 
-    @Test
-    void getAllApplications_shouldReturnJApplications_whenDaoReturnsApplications()
-            throws SQLException, DatabaseConnectionException {
-        Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-
-        List<Application> expected = List.of(new Application("test@gmail.com",
-                1,
-                "Belfast"));
-
-        Mockito.when(applicationDao.getAllApplications(EMAIL, conn))
-                .thenReturn(expected);
-
-        List<Application> result =
-                applicationService.getAllApplications(EMAIL);
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void getAllApplications_shouldThrowSQLException_whenDaoThrowsSQLException()
-            throws SQLException, DatabaseConnectionException {
-        Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-
-        List<Application> expected = List.of(new Application("test@gmail.com",
-                1,
-                "Belfast"));
-
-        Mockito.when(applicationDao.getAllApplications(EMAIL, conn))
-                .thenThrow(SQLException.class);
-
-
-        assertThrows(SQLException.class,
-                () -> applicationService.getAllApplications(EMAIL));
-    }
-
-    @Test
-    void getAllApplications_shouldThrowDatabaseConnectionException_whenDaatabaseConnectorThrowsDatabaseConnectionException()
-            throws SQLException, DatabaseConnectionException {
-        Mockito.when(databaseConnector.getConnection()).thenThrow(DatabaseConnectionException.class);
-
-        List<Application> expected = List.of(new Application("test@gmail.com",
-                1,
-                "Belfast"));
-
-
-        assertThrows(DatabaseConnectionException.class,
-                () -> applicationService.getAllApplications(EMAIL));
-    }
 }

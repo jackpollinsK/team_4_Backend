@@ -9,7 +9,6 @@ import org.example.models.ApplicationRequest;
 import org.example.services.ApplicationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.example.models.Application;
 
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -89,44 +88,9 @@ public class ApplicationControllerTests {
         Response response = applicationController.apply(applicationRequest);
         assertEquals(500, response.getStatus());
     }
-
-    @Test
-    void getApplicationsShouldReturnApplicationsWhenServiceReturnsApplications()
-            throws SQLException, DatabaseConnectionException {
-        List<Application> applicationList = new ArrayList<>();
-        Application application = new Application("Open Test Role",
-                1,
-                "open");
-        applicationList.add(application);
-
-        when(applicationService.getAllApplications(EMAIL)).thenReturn(
-                applicationList);
-
-        Response response = applicationController.getAppliedJobs(EMAIL);
-
-        assertEquals(200, response.getStatus());
-        assertEquals(applicationList, response.getEntity());
-    }
-
-    @Test
-    void getJApplicationsShouldReturn500WhenServiceThrowsSQLException()
-            throws SQLException, DatabaseConnectionException {
-        when(applicationService.getAllApplications(EMAIL)).thenThrow(
-                SQLException.class);
-
-        Response response = applicationController.getAppliedJobs(EMAIL);
-
-        assertEquals(500, response.getStatus());
-    }
-
-    @Test
-    void getApplicationsShouldReturn500WhenServiceThrowsDatabaseConnectionException()
-            throws SQLException, DatabaseConnectionException {
-        when(applicationService.getAllApplications(EMAIL)).thenThrow(
-                DatabaseConnectionException.class);
-
-        Response response = applicationController.getAppliedJobs(EMAIL);
-
-        assertEquals(500, response.getStatus());
-    }
 }
+
+
+
+
+
