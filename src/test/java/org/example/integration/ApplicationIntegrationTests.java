@@ -91,16 +91,10 @@ public class ApplicationIntegrationTests {
 
     }
 
-    @AfterAll
-    public static void delete()
-            throws DatabaseConnectionException, SQLException {
-        ApplicationDao applicationDao = new ApplicationDao();
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        applicationDao.deleteApplication(applicationRequest,
-                databaseConnector.getConnection());
-    }
+
 
     @Test
+    @Order(3)
     void getApplications_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
         Client client = APP.client();
 
@@ -114,6 +108,7 @@ public class ApplicationIntegrationTests {
     }
 
     @Test
+    @Order(4)
     void getApplications_shouldReturn200_WhenUserIsAuthorised() {
         Client client = APP.client();
 
@@ -128,5 +123,14 @@ public class ApplicationIntegrationTests {
                 .post(Entity.json(EMAIL))
                 .getStatus();
         Assertions.assertEquals(200, response);
+    }
+
+    @AfterAll
+    public static void delete()
+            throws DatabaseConnectionException, SQLException {
+        ApplicationDao applicationDao = new ApplicationDao();
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        applicationDao.deleteApplication(applicationRequest,
+                databaseConnector.getConnection());
     }
 }
