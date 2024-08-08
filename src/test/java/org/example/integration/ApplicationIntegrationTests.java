@@ -99,4 +99,17 @@ public class ApplicationIntegrationTests {
         applicationDao.deleteApplication(applicationRequest,
                 databaseConnector.getConnection());
     }
+
+    @Test
+    void getJobRoles_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
+        Client client = APP.client();
+
+        int response = client
+                .target("http://localhost:8080/api/getAppliedJobs")
+                .request()
+                .post(Entity.json(EMAIL)).getStatus();
+
+        Assertions.assertEquals(401, response);
+
+    }
 }
