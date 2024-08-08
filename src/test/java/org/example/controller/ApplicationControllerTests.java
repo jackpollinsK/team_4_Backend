@@ -109,7 +109,7 @@ public class ApplicationControllerTests {
     }
 
     @Test
-    void getJobRolesShouldReturn500WhenServiceThrowsSQLException()
+    void getJApplicationsShouldReturn500WhenServiceThrowsSQLException()
             throws SQLException, DatabaseConnectionException {
         when(applicationService.getAllApplications(EMAIL)).thenThrow(
                 SQLException.class);
@@ -120,7 +120,7 @@ public class ApplicationControllerTests {
     }
 
     @Test
-    void getJobRolesShouldReturn500WhenServiceThrowsDatabaseConnectionException()
+    void getApplicationsShouldReturn500WhenServiceThrowsDatabaseConnectionException()
             throws SQLException, DatabaseConnectionException {
         when(applicationService.getAllApplications(EMAIL)).thenThrow(
                 DatabaseConnectionException.class);

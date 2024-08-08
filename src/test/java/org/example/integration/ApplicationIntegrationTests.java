@@ -101,7 +101,7 @@ public class ApplicationIntegrationTests {
     }
 
     @Test
-    void getJobRoles_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
+    void getApplications_shouldReturn401Unauthorised_WhenUserNotLoggedIn() {
         Client client = APP.client();
 
         int response = client
@@ -111,5 +111,22 @@ public class ApplicationIntegrationTests {
 
         Assertions.assertEquals(401, response);
 
+    }
+
+    @Test
+    void getApplications_shouldReturn200_WhenUserIsAuthorised() {
+        Client client = APP.client();
+
+        Response token = client
+                .target("http://localhost:8080/api/auth/login")
+                .request().post(Entity.json(loginRequest));
+
+        int response = client
+                .target("http://localhost:8080/api/getAppliedJobs")
+                .request().header("Authorization", "Bearer "
+                        + token.readEntity(String.class))
+                .post(Entity.json(EMAIL))
+                .getStatus();
+        Assertions.assertEquals(200, response);
     }
 }
