@@ -60,7 +60,7 @@ public class ApplicationIntegrationTests {
                 .request().post(Entity.json(loginRequest));
 
         int status = client
-                .target("http://localhost:8080/api/apply-for-role")
+                .target("http://localhost:8080/api/applyForJobRole")
                 .request().header(
                         "Authorization", "Bearer "
                                 + token.readEntity(String.class))
@@ -80,7 +80,7 @@ public class ApplicationIntegrationTests {
                 .request().post(Entity.json(loginRequest));
 
         int status = client
-                .target("http://localhost:8080/api/apply-for-role")
+                .target("http://localhost:8080/api/applyForJobRole")
                 .request().header(
                         "Authorization", "Bearer "
                                 + token.readEntity(String.class))

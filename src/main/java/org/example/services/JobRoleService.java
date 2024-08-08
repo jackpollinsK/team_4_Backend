@@ -3,12 +3,12 @@ package org.example.services;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
+import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.InvalidException;
-import org.example.exceptions.DoesNotExistException;
 import org.example.models.JobRole;
-import org.example.models.JobRoleRequest;
 import org.example.models.JobRoleInfo;
+import org.example.models.JobRoleRequest;
 import org.example.validators.JobRoleValidator;
 
 import java.sql.SQLException;
@@ -19,7 +19,6 @@ public class JobRoleService {
     private final DatabaseConnector databaseConnector;
     private final JobRoleValidator jobRoleValidator;
 
-    @SuppressWarnings("checkstyle:FinalParameters")
     public JobRoleService(final JobRoleDao jobRoleDao,
                           final DatabaseConnector databaseConnector,
                           final JobRoleValidator jobRoleValidator) {
@@ -37,7 +36,7 @@ public class JobRoleService {
         if (id != -1) {
             return id;
         } else {
-            throw new InvalidException(Entity.JOBROLES, "Invalid Data");
+            throw new InvalidException(Entity.JOB_ROLE, "Invalid Data");
         }
     }
 
@@ -51,9 +50,21 @@ public class JobRoleService {
         JobRoleInfo jobRoleInfo = jobRoleDao.getJobRoleById(id,
                 databaseConnector.getConnection());
         if (jobRoleInfo == null) {
-            throw new DoesNotExistException(Entity.JOBROLES);
+            throw new DoesNotExistException(Entity.JOB_ROLE);
         }
+            return jobRoleInfo;
+    }
 
-        return jobRoleInfo;
+    public void deleteJobRole(final int id)
+          throws  SQLException, DoesNotExistException,
+            DatabaseConnectionException {
+        JobRoleInfo jobRoleToUpdate = jobRoleDao.getJobRoleById(id,
+                databaseConnector.getConnection());
+
+        if (jobRoleToUpdate == null) {
+            throw new DoesNotExistException(Entity.JOB_ROLE);
+        }
+        jobRoleDao.deleteJobRole(id, databaseConnector.getConnection());
+
     }
 }
