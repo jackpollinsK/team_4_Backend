@@ -52,6 +52,10 @@ public class JobRoleController {
 
     @POST
     @RolesAllowed(UserRole.ADMIN)
+    @ApiOperation(
+            value = "Adds New Job Role",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = Integer.class)
     public Response addRole(final JobRoleRequest jobRoleRequest) {
         try {
             int id = jobRoleService.insertRole(jobRoleRequest);
