@@ -9,7 +9,6 @@ import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.InvalidException;
 import org.example.models.Application;
 import org.example.models.ApplicationRequest;
-import org.example.models.JobRole;
 import org.example.models.UserRole;
 import org.example.services.ApplicationService;
 
