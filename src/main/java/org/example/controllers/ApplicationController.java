@@ -2,6 +2,7 @@ package org.example.controllers;
 
 
 import io.swagger.annotations.Api;
+import org.eclipse.jetty.http.HttpStatus;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.InvalidException;
 import org.example.models.ApplicationRequest;
@@ -44,5 +45,21 @@ public class ApplicationController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e.getMessage()).build();
         }
+    }
+
+    @POST
+    @Path("/getAppliedJobs")
+    @RolesAllowed(UserRole.USER)
+    public Response getAppliedJobs(final String email) {
+
+        try {
+            return Response
+                    .status(HttpStatus.OK_200)
+                    .entity(applicationService.getAllApplications(email))
+                    .build();
+        } catch (DatabaseConnectionException | SQLException e) {
+            return Response.serverError().build();
+        }
+
     }
 }

@@ -42,7 +42,7 @@ public class JobRoleController {
         try {
             return Response.ok().entity(jobRoleService.getJobRoles()).build();
         } catch (SQLException | DatabaseConnectionException e) {
-            return Response.serverError().build();
+
         }
     }
 

@@ -5,9 +5,11 @@ import org.example.daos.DatabaseConnector;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.InvalidException;
+import org.example.models.Application;
 import org.example.models.ApplicationRequest;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ApplicationService {
 
@@ -35,6 +37,15 @@ public class ApplicationService {
                     databaseConnector.getConnection());
         }
 
+
+    }
+
+    public List<Application> getAllApplications(
+            final String email)
+            throws DatabaseConnectionException, SQLException {
+
+        return applicationDao.getAllApplications(email,
+                databaseConnector.getConnection());
 
     }
 }

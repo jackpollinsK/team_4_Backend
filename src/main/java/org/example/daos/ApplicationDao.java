@@ -1,12 +1,16 @@
 package org.example.daos;
 
+import org.example.models.Application;
 import org.example.models.ApplicationRequest;
+import org.example.models.JobRole;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ApplicationDao {
@@ -48,8 +52,37 @@ public class ApplicationDao {
 
     }
 
-    public void deleteApplication(final ApplicationRequest applicationRequest,
-                                   final Connection c) throws
+    public List<Application> getAllApplications(
+            final String email,
+            final Connection c) throws SQLException {
+        List<Application> applications = new ArrayList<>();
+        String query =
+                "SELECT Email, role_id, cv_link FROM "
+                        + "roleApplication WHERE Email = ?";
+
+        try (PreparedStatement st = c.prepareStatement(query)) {
+            st.setString(1, email);
+            try (ResultSet resultSet = st.executeQuery()) {
+
+                while (resultSet.next()) {
+                    Application application = new Application(
+                            resultSet.getString("Email"),
+                            resultSet.getInt("role_id"),
+                            resultSet.getString("cv_link")
+                    );
+                    applications.add(application);
+                }
+            }
+
+            return applications;
+
+
+        }
+    }
+
+    public void deleteApplication(
+            final ApplicationRequest applicationRequest,
+            final Connection c) throws
             SQLException {
         String deleteStatement =
                 "DELETE FROM roleApplication WHERE Email = ? AND role_id = ?";
@@ -59,3 +92,5 @@ public class ApplicationDao {
         st.executeUpdate();
     }
 }
+
+
