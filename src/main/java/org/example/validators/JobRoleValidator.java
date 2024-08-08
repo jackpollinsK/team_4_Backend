@@ -35,5 +35,10 @@ public class JobRoleValidator {
             throw new InvalidException(Entity.JOB_ROLE,
                     "Responsibility name must be not be null");
         }
+
+        if (jobRoleRequest.getJobSpec().length() > 500) {
+            throw new InvalidException(Entity.JOB_ROLE,
+                    "Job Spec name must be less than 500 Characters");
+        }
     }
 }
