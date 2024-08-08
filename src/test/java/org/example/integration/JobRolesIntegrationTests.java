@@ -73,8 +73,9 @@ public class JobRolesIntegrationTests {
         Assertions.assertEquals(401, response);
 
     }
+
     @Test
-    void getJobRoleById_shouldReturnJobRoleInfo_whenJobRoleInfoDoesExist_withAuthorisedUser(){
+    void getJobRoleById_shouldReturnJobRoleInfo_whenJobRoleInfoDoesExist_withAuthorisedUser() {
         Client client = APP.client();
 
         Response token = client
@@ -88,8 +89,9 @@ public class JobRolesIntegrationTests {
 
         Assertions.assertEquals(200, response);
     }
+
     @Test
-    void getJobRoleById_shouldReturn404_whenJobRoleInfoDoesNotExist_withAuthorisedUser(){
+    void getJobRoleById_shouldReturn404_whenJobRoleInfoDoesNotExist_withAuthorisedUser() {
         Client client = APP.client();
 
         Response token = client
@@ -105,7 +107,7 @@ public class JobRolesIntegrationTests {
     }
 
     @Test
-    void getJobRoleById_shouldReturn401_whenJobRoleInfoDoesExist_withUnauthorisedUser(){
+    void getJobRoleById_shouldReturn401_whenJobRoleInfoDoesExist_withUnauthorisedUser() {
         Client client = APP.client();
 
         int response = client
@@ -128,7 +130,7 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).get()
                 .getStatus();
-        Assertions.assertEquals(200,response);
+        Assertions.assertEquals(200, response);
     }
 
     @Test
@@ -144,7 +146,7 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).delete()
                 .getStatus();
-        Assertions.assertEquals(403,response);
+        Assertions.assertEquals(403, response);
     }
 
     @Test
@@ -160,7 +162,7 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).delete()
                 .getStatus();
-        Assertions.assertEquals(404,response);
+        Assertions.assertEquals(404, response);
     }
 
     @Test
@@ -175,7 +177,7 @@ public class JobRolesIntegrationTests {
                 .request().post(Entity.json(loginRequest2));
 
         int id = jobRoleDao.insertRole(jobRoleRequest
-                ,databaseConnector.getConnection());
+                , databaseConnector.getConnection());
         if (id == -1) {
             fail("Can not get max Id");
         }
@@ -184,7 +186,7 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).delete()
                 .getStatus();
-        Assertions.assertEquals(204,response2);
+        Assertions.assertEquals(204, response2);
     }
 
     @Test
@@ -238,8 +240,7 @@ public class JobRolesIntegrationTests {
                         + token.readEntity(String.class))
                 .post(Entity.json(jobRoleRequest));
 
-        int id = jobRoleDao.insertRole(jobRoleRequest
-                ,databaseConnector.getConnection());
+        int id = response.getStatus();
         if (id == -1) {
             fail("Can not get max Id");
         }
