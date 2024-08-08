@@ -2,16 +2,21 @@ package org.example.controllers;
 
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.eclipse.jetty.http.HttpStatus;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.InvalidException;
+import org.example.models.Application;
 import org.example.models.ApplicationRequest;
+import org.example.models.JobRole;
 import org.example.models.UserRole;
 import org.example.services.ApplicationService;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 
@@ -28,6 +33,10 @@ public class ApplicationController {
     @POST
     @Path("/applyForJobRole")
     @RolesAllowed(UserRole.USER)
+    @ApiOperation(
+            value = "Inserts an application",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = Integer.class)
     public Response apply(final ApplicationRequest applicationRequest) {
         try {
             applicationService.createApplication(applicationRequest);
@@ -50,6 +59,10 @@ public class ApplicationController {
     @POST
     @Path("/getAppliedJobs")
     @RolesAllowed(UserRole.USER)
+    @ApiOperation(
+            value = "Gets all applications from a user",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = Application.class)
     public Response getAppliedJobs(final String email) {
 
         try {
