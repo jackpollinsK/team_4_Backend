@@ -1,2 +1,0 @@
-ALTER TABLE jobRoles
-ADD COLUMN open_positions SMALLINT NOT NULL DEFAULT 1;
