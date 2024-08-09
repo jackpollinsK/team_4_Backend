@@ -4,47 +4,75 @@ import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
 import org.example.exceptions.DoesNotExistException;
+import org.example.exceptions.InvalidException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
 import org.example.models.JobRoleRequest;
+import org.example.models.LoginRequest;
+import org.example.validators.JobRoleValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class JobRolesServiceTests {
 
-    JobRoleDao jobRoleDao = mock(JobRoleDao.class);
-    DatabaseConnector databaseConnector = mock(DatabaseConnector.class);
+    JobRoleDao jobRoleDao = Mockito.mock(JobRoleDao.class);
+    DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
+    JobRoleValidator jobRoleValidator = Mockito.mock(JobRoleValidator.class);
     JobRoleService jobRoleService =
-            new JobRoleService(jobRoleDao, databaseConnector);
+            new JobRoleService(jobRoleDao, databaseConnector, jobRoleValidator);
+    private static final String EMAIL = System.getenv("LOGIN_EMAIL_1");
+    private static final String PASSWORD = System.getenv("LOGIN_PASSWORD_1");
+    private static final String EMAIL2 = System.getenv("LOGIN_EMAIL_2");
+    private static final String PASSWORD2 = System.getenv("LOGIN_PASSWORD_2");
     static String dateS = "2024-09-28";
     static java.sql.Date date = java.sql.Date.valueOf(dateS);
     private static final JobRoleRequest jobRoleRequest = new JobRoleRequest(
-            "UX Test Designer",
+            "UD Test Designer",
             1,
             2,
             3,
             date,
-            "Fantastic Job",
-            "Loads of Responsibilities",
-            "www.kainos.com"
-
+            "Hi".repeat(1000),
+            "Hi".repeat(500),
+            "www.kainos.com",
+            1
     );
+    private static final LoginRequest loginRequest = new LoginRequest(
+            EMAIL,
+            PASSWORD
+    );
+    private static final LoginRequest loginRequest2 = new LoginRequest(
+            EMAIL2,
+            PASSWORD2
+    );
+
+    JobRoleInfo expected = new JobRoleInfo(1,
+            "Open Test Role",
+            "Belfast",
+            "Eng",
+            "A",
+            new Date(),
+            "open",
+            "Test Description",
+            "Test Responsibilities",
+            "Test Job Spec");
     Connection conn;
 
     @Test
@@ -96,16 +124,6 @@ class JobRolesServiceTests {
             DoesNotExistException {
         Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
 
-        JobRoleInfo expected = new JobRoleInfo(1,
-                "Open Test Role",
-                "Belfast",
-                "Eng",
-                "A",
-                new Date(),
-                "open",
-                "Test Description",
-                "Test Responsibilities",
-                "Test Job Spec");
 
         Mockito.when(jobRoleDao.getJobRoleById(1, conn)).thenReturn(expected);
 
@@ -148,63 +166,68 @@ class JobRolesServiceTests {
     }
 
     @Test
-    void deleteJobRole_shouldThrowSQLException_whenDaoThrowsSqlException()
-            throws SQLException, DatabaseConnectionException {
+    void addJobRole_shouldThrowSQLException_whenDaoThrowsSqlException()
+            throws SQLException, DatabaseConnectionException, InvalidException {
         Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-        int id = jobRoleDao.insertRole(jobRoleRequest,conn);
-        if (id == -1) {
-            fail("Can not get max Id");
-        }
-        doThrow(SQLException.class).when(jobRoleDao)
-                .deleteJobRole(id, conn);
-        assertThrows(SQLException.class,
-                () -> jobRoleDao.deleteJobRole(id,databaseConnector.getConnection()));
+
+        Mockito.when(jobRoleService.insertRole(jobRoleRequest))
+                .thenThrow(SQLException.class);
+
+        assertThrows(SQLException.class, () ->
+                jobRoleService.insertRole(jobRoleRequest));
     }
+
     @Test
-    void deleteJobRole_shouldThrowDatabaseException_whenDaoThrowsSqlException()
-            throws SQLException, DatabaseConnectionException {
-        Mockito.when(databaseConnector.getConnection()).thenReturn(null);
-        int id = jobRoleDao.insertRole(jobRoleRequest,conn);
-        if (id == -1) {
-            fail("Can not get max Id");
-        }
-        doThrow(DatabaseConnectionException.class).when(jobRoleDao)
-                .deleteJobRole(id, conn);
+    void deleteJobRole_shouldThrowDatabaseConnectionException_whenDaoThrowsDatabaseConnectionException()
+            throws SQLException, DatabaseConnectionException, InvalidException,
+            DoesNotExistException {
+        Mockito.when(databaseConnector.getConnection())
+                .thenThrow(DatabaseConnectionException.class);
+
         assertThrows(DatabaseConnectionException.class,
-                () -> jobRoleDao.deleteJobRole(id,databaseConnector.getConnection()));
+                () -> jobRoleService.deleteJobRole(1));
     }
+
     @Test
-    void deleteJobRole_shouldReturn204_whenRoleIsDeleted() {
-        try{
-            Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-            int id = jobRoleDao.insertRole(jobRoleRequest,conn);
-            if (id == -1) {
-                fail("Can not get max Id");
-            }
-            jobRoleDao.deleteJobRole(id, conn);
-        } catch (Exception e) {
-            fail("Should not throw an error");
-        }
+    void deleteJobRole_shouldThrowSQLException_whenDatabaseConnectorThrowsSqlException()
+            throws SQLException, DatabaseConnectionException, InvalidException,
+            DoesNotExistException {
+        Mockito.when(databaseConnector.getConnection())
+                .thenThrow(SQLException.class);
+
+        assertThrows(SQLException.class,
+                () -> jobRoleService.deleteJobRole(1));
+    }
+
+    @Test
+    void deleteJobRole_shouldReturn204_whenRoleIsDeleted()
+            throws DatabaseConnectionException, SQLException,
+            DoesNotExistException {
+        Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
+
+        Mockito.when(jobRoleDao.getJobRoleById(1, conn))
+                .thenReturn(expected);
+        jobRoleService.deleteJobRole(1);
     }
 
     @Test
     void insertJobRole_shouldThrowSQLException_whenDaoThrowsSqlException()
-            throws SQLException, DatabaseConnectionException{
+            throws SQLException, DatabaseConnectionException, InvalidException {
         Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
 
-        Mockito.when(jobRoleDao.insertRole(jobRoleRequest,conn))
+        Mockito.when(jobRoleService.insertRole(jobRoleRequest))
                 .thenThrow(SQLException.class);
 
         assertThrows(SQLException.class, () ->
-                jobRoleDao.insertRole(jobRoleRequest,conn));
+                jobRoleService.insertRole(jobRoleRequest));
     }
 
-        @Test
+    @Test
     void insertJobRole_shouldReturnCreatedRoleID_whenNewRoleCreated()
-            throws SQLException, DatabaseConnectionException {
-            Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
-            int id = -1;
-            id = jobRoleDao.insertRole(jobRoleRequest,conn);
-            assertNotEquals(-1, id);
+            throws SQLException, DatabaseConnectionException, InvalidException {
+        Mockito.when(databaseConnector.getConnection()).thenReturn(conn);
+        int id = -1;
+        id = jobRoleService.insertRole(jobRoleRequest);
+        assertNotEquals(-1, id);
     }
 }

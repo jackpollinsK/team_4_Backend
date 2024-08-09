@@ -30,8 +30,10 @@ import static org.mockito.Mockito.when;
 
 public class JobRolesControllerTests {
     private final JobRoleDao jobRoleDao = Mockito.mock(JobRoleDao.class);
-    private final JobRoleService jobRoleService = Mockito.mock(JobRoleService.class);
-    private final JobRoleController jobRoleController = new JobRoleController(jobRoleService);
+    private final JobRoleService jobRoleService =
+            Mockito.mock(JobRoleService.class);
+    private final JobRoleController jobRoleController =
+            new JobRoleController(jobRoleService);
     DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
     static String dateS = "2024-09-28";
     static java.sql.Date date = java.sql.Date.valueOf(dateS);
@@ -43,9 +45,9 @@ public class JobRolesControllerTests {
             date,
             "Fantastic Job",
             "Loads of Responsibilities",
-            "www.kainos.com"
+            "www.kainos.com",
+            1
     );
-
 
 
     @Test
@@ -87,7 +89,8 @@ public class JobRolesControllerTests {
     @Test
     void getJobRolesShouldReturn500WhenServiceThrowsDatabaseConnectionException()
             throws SQLException, DatabaseConnectionException {
-        when(jobRoleService.getJobRoles()).thenThrow(DatabaseConnectionException.class);
+        when(jobRoleService.getJobRoles()).thenThrow(
+                DatabaseConnectionException.class);
 
         Response response = jobRoleController.getJobRoles();
 
@@ -123,7 +126,8 @@ public class JobRolesControllerTests {
     void getJobRoleByIdShouldReturn404WhenServiceReturnsNull()
             throws SQLException, DatabaseConnectionException,
             DoesNotExistException {
-        when(jobRoleService.getJobRoleById(1)).thenThrow(DoesNotExistException.class);
+        when(jobRoleService.getJobRoleById(1)).thenThrow(
+                DoesNotExistException.class);
         Response response = jobRoleController.getJobRoleById(1);
         assertEquals(404, response.getStatus());
     }
@@ -162,6 +166,7 @@ public class JobRolesControllerTests {
         assertEquals(204, response.getStatus());
 
     }
+
     @Test
     void deleteJobRole_ShouldReturn404_WhenIdDoesNotExist()
             throws SQLException, DatabaseConnectionException,

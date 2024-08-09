@@ -7,10 +7,12 @@ import org.example.JDDConfiguration;
 import org.example.daos.DatabaseConnector;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DatabaseConnectionException;
+import org.example.exceptions.InvalidException;
 import org.example.models.JobRoleRequest;
 import org.example.models.LoginRequest;
 
 import org.example.services.AuthService;
+import org.example.validators.JobRoleValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doNothing;
 
 
 @ExtendWith(DropwizardExtensionsSupport.class)
@@ -31,24 +34,23 @@ public class JobRolesIntegrationTests {
     public static final DropwizardAppExtension<JDDConfiguration> APP =
             new DropwizardAppExtension<>(JDDApplication.class);
     AuthService authService = Mockito.mock(AuthService.class);
-    private static final String EMAIL   = System.getenv("LOGIN_EMAIL_1");
-    private static final String PASSWORD  = System.getenv("LOGIN_PASSWORD_1");
+    private static final String EMAIL = System.getenv("LOGIN_EMAIL_1");
+    private static final String PASSWORD = System.getenv("LOGIN_PASSWORD_1");
     private static final String EMAIL2 = System.getenv("LOGIN_EMAIL_2");
-    private static final String PASSWORD2  = System.getenv("LOGIN_PASSWORD_2");
+    private static final String PASSWORD2 = System.getenv("LOGIN_PASSWORD_2");
     static String dateS = "2024-09-28";
     static Date date = Date.valueOf(dateS);
     private static final JobRoleRequest jobRoleRequest = new JobRoleRequest(
-            "UX Test Designer",
+            "UD Test Designer",
             1,
             2,
             3,
-             date,
-            "Fantastic Job",
-            "Loads of Responsibilities",
-            "www.kainos.com"
-
+            date,
+            "Hi".repeat(1000),
+            "Hi".repeat(500),
+            "www.kainos.com",
+            1
     );
-
     private static final LoginRequest loginRequest = new LoginRequest(
             EMAIL,
             PASSWORD
@@ -71,8 +73,9 @@ public class JobRolesIntegrationTests {
         Assertions.assertEquals(401, response);
 
     }
+
     @Test
-    void getJobRoleById_shouldReturnJobRoleInfo_whenJobRoleInfoDoesExist_withAuthorisedUser(){
+    void getJobRoleById_shouldReturnJobRoleInfo_whenJobRoleInfoDoesExist_withAuthorisedUser() {
         Client client = APP.client();
 
         Response token = client
@@ -86,8 +89,9 @@ public class JobRolesIntegrationTests {
 
         Assertions.assertEquals(200, response);
     }
+
     @Test
-    void getJobRoleById_shouldReturn404_whenJobRoleInfoDoesNotExist_withAuthorisedUser(){
+    void getJobRoleById_shouldReturn404_whenJobRoleInfoDoesNotExist_withAuthorisedUser() {
         Client client = APP.client();
 
         Response token = client
@@ -103,7 +107,7 @@ public class JobRolesIntegrationTests {
     }
 
     @Test
-    void getJobRoleById_shouldReturn401_whenJobRoleInfoDoesExist_withUnauthorisedUser(){
+    void getJobRoleById_shouldReturn401_whenJobRoleInfoDoesExist_withUnauthorisedUser() {
         Client client = APP.client();
 
         int response = client
@@ -126,7 +130,7 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).get()
                 .getStatus();
-        Assertions.assertEquals(200,response);
+        Assertions.assertEquals(200, response);
     }
 
     @Test
@@ -142,7 +146,7 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).delete()
                 .getStatus();
-        Assertions.assertEquals(403,response);
+        Assertions.assertEquals(403, response);
     }
 
     @Test
@@ -158,7 +162,7 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).delete()
                 .getStatus();
-        Assertions.assertEquals(404,response);
+        Assertions.assertEquals(404, response);
     }
 
     @Test
@@ -173,7 +177,7 @@ public class JobRolesIntegrationTests {
                 .request().post(Entity.json(loginRequest2));
 
         int id = jobRoleDao.insertRole(jobRoleRequest
-                ,databaseConnector.getConnection());
+                , databaseConnector.getConnection());
         if (id == -1) {
             fail("Can not get max Id");
         }
@@ -182,7 +186,69 @@ public class JobRolesIntegrationTests {
                 .request().header("Authorization", "Bearer "
                         + token.readEntity(String.class)).delete()
                 .getStatus();
-        Assertions.assertEquals(204,response2);
+        Assertions.assertEquals(204, response2);
     }
 
+    @Test
+    void addJobRole_shouldReturn403_WhenUserIsNotAdmin() {
+        Client client = APP.client();
+
+        Response token = client
+                .target("http://localhost:8080/api/auth/login")
+                .request().post(Entity.json(loginRequest));
+
+        int response = client
+                .target("http://localhost:8080/api/JobRoles/")
+                .request().header("Authorization", "Bearer "
+                        + token.readEntity(String.class))
+                .post(Entity.json(jobRoleRequest))
+                .getStatus();
+        Assertions.assertEquals(403, response);
+    }
+
+    @Test
+    void addJobRole_shouldReturn401_WhenNotLoggedIn() {
+        Client client = APP.client();
+
+
+        int response = client
+                .target("http://localhost:8080/api/JobRoles/")
+                .request()
+                .post(Entity.json(jobRoleRequest))
+                .getStatus();
+        Assertions.assertEquals(401, response);
+    }
+
+    @Test
+    void addJobRole_shouldReturn201_WhenUserIsAdded()
+            throws DatabaseConnectionException, SQLException, InvalidException {
+        Client client = APP.client();
+        JobRoleDao jobRoleDao = new JobRoleDao();
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        JobRoleValidator jobRoleValidator =
+                Mockito.mock(JobRoleValidator.class);
+
+        doNothing().when(jobRoleValidator).validateJobRole(jobRoleRequest);
+
+        Response token = client
+                .target("http://localhost:8080/api/auth/login")
+                .request().post(Entity.json(loginRequest2));
+
+        Response response = client
+                .target("http://localhost:8080/api/JobRoles/").request()
+                .header("Authorization", "Bearer "
+                        + token.readEntity(String.class))
+                .post(Entity.json(jobRoleRequest));
+
+        int id = response.getStatus();
+        if (id == -1) {
+            fail("Can not get max Id");
+        }
+        int response2 = client
+                .target("http://localhost:8080/api/JobRoles/" + id)
+                .request().delete()
+                .getStatus();
+        System.out.println(response.toString());
+        Assertions.assertEquals(201, response.getStatus());
+    }
 }

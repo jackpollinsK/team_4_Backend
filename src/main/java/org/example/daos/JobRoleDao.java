@@ -4,12 +4,12 @@ import org.example.exceptions.DatabaseConnectionException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleInfo;
 import org.example.models.JobRoleRequest;
-import java.sql.Statement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,21 +87,14 @@ public class JobRoleDao {
         }
         return null;
     }
-    public void deleteJobRole(final int id, final Connection c) throws
-            SQLException, DatabaseConnectionException {
-        String deleteStatement = "DELETE FROM jobRoles WHERE id = ?";
-        PreparedStatement st = c.prepareStatement(deleteStatement);
-        st.setInt(1, id);
-        st.executeUpdate();
-    }
 
     public int insertRole(final JobRoleRequest jobRoleRequest,
                           final Connection c) throws SQLException {
         String insertRoleQuery =
                 "INSERT INTO jobRoles(role_name, location_id, capability_id,"
                         + " band_id, closing_date, status, description,"
-                        + " responsibilities, job_spec) VALUES "
-                        + "(?, ?, ?, ?, ?, 'open', ?, ?, ?);";
+                        + " responsibilities, job_spec, open_positions) VALUES "
+                        + "(?, ?, ?, ?, ?, 'open', ?, ?, ?, ?);";
 
         PreparedStatement preparedStmt = c.prepareStatement(insertRoleQuery,
                 Statement.RETURN_GENERATED_KEYS);
@@ -112,7 +105,8 @@ public class JobRoleDao {
         preparedStmt.setString(5, jobRoleRequest.getClosingDate().toString());
         preparedStmt.setString(6, jobRoleRequest.getDescription());
         preparedStmt.setString(7, jobRoleRequest.getResponsibilities());
-        preparedStmt.setString(8, jobRoleRequest.getLink());
+        preparedStmt.setString(8, jobRoleRequest.getJobSpec());
+        preparedStmt.setInt(9, jobRoleRequest.getOpenPositions());
 
         int affectedRows = preparedStmt.executeUpdate();
 
@@ -127,5 +121,13 @@ public class JobRoleDao {
         }
 
         return -1;
+    }
+
+    public void deleteJobRole(final int id, final Connection c) throws
+            SQLException, DatabaseConnectionException {
+        String deleteStatement = "DELETE FROM jobRoles WHERE id = ?";
+        PreparedStatement st = c.prepareStatement(deleteStatement);
+        st.setInt(1, id);
+        st.executeUpdate();
     }
 }
