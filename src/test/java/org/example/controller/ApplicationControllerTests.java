@@ -12,11 +12,15 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ApplicationControllerTests {
+
+    private static final String EMAIL = System.getenv("LOGIN_EMAIL_1");
 
     ApplicationService applicationService =
             Mockito.mock(ApplicationService.class);
@@ -85,3 +89,8 @@ public class ApplicationControllerTests {
         assertEquals(500, response.getStatus());
     }
 }
+
+
+
+
+

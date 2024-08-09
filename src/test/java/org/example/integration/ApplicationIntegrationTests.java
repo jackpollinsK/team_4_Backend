@@ -91,6 +91,7 @@ public class ApplicationIntegrationTests {
 
     }
 
+
     @AfterAll
     public static void delete()
             throws DatabaseConnectionException, SQLException {

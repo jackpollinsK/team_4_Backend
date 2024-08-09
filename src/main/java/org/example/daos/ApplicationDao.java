@@ -17,13 +17,14 @@ public class ApplicationDao {
 
         String insertStatement =
                 "INSERT INTO roleApplication VALUES "
-                        + "(?, ?, ?);";
+                        + "(?, ?, ?, ?);";
 
         PreparedStatement st = c.prepareStatement(insertStatement);
 
         st.setString(1, applicationRequest.getEmail());
         st.setInt(2, applicationRequest.getRoleID());
         st.setString(3, applicationRequest.getCvLink());
+        st.setBoolean(4, true);
 
         st.executeUpdate();
     }
@@ -48,8 +49,10 @@ public class ApplicationDao {
 
     }
 
-    public void deleteApplication(final ApplicationRequest applicationRequest,
-                                   final Connection c) throws
+
+    public void deleteApplication(
+            final ApplicationRequest applicationRequest,
+            final Connection c) throws
             SQLException {
         String deleteStatement =
                 "DELETE FROM roleApplication WHERE Email = ? AND role_id = ?";
@@ -59,3 +62,5 @@ public class ApplicationDao {
         st.executeUpdate();
     }
 }
+
+

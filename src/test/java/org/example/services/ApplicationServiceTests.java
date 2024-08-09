@@ -12,12 +12,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class ApplicationServiceTests {
 
+    private static final String EMAIL = System.getenv("LOGIN_EMAIL_1");
     ApplicationDao applicationDao = Mockito.mock(ApplicationDao.class);
     DatabaseConnector databaseConnector = Mockito.mock(DatabaseConnector.class);
     ApplicationService applicationService =
@@ -68,4 +71,5 @@ class ApplicationServiceTests {
                         applicationRequest));
 
     }
+
 }
